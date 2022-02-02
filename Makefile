@@ -6,7 +6,7 @@ PATH_LIB 	=	./libft_gnl/
 HEADER  	=	./includes/minishell.h 
 
 OBJ_DIR		=	./objects
-SRC			=	$(SRC_GNL) main.c
+SRC			=	$(SRC_GNL) $(shell ls ./*c)
 OBJ			=	$(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 
 CFLAGS		=	-I$(PATH_HEADER) #-Wall -Wextra -Werror 
