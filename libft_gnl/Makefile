@@ -1,8 +1,8 @@
 NAME = libft_gnl.a
 
 # Headers
-HEADERS_DIRECTORY = -I../includes/
-HEADERS = $(shell ls ../includes/*.h)
+HEADERS_DIRECTORY = -I./includes/
+HEADERS = $(shell ls ./includes/*.h)
 
 # Sources
 SRCS_LIBFT = $(shell ls ./libft/*.c)
