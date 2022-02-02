@@ -1,12 +1,11 @@
 NAME		=	minishell
 
-LIBFT		=	./libft/libft.a
+LIBFT		=	./libft_gnl/libft_gnl.a
 PATH_HEADER =	./includes/
-PATH_LIB 	=	./libft/
+PATH_LIB 	=	./libft_gnl/
 HEADER  	=	./includes/minishell.h 
 
 OBJ_DIR		=	./objects
-SRC_GNL 	=	$(shell ls ./gnl/*.c)
 SRC			=	$(SRC_GNL) main.c
 OBJ			=	$(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 
@@ -19,9 +18,6 @@ all:			run_libft $(NAME)
 $(NAME):		${OBJ} $(HEADER) $(LIBFT)
 				$(CC) $(CFLAGS) ${OBJ} $(LIBFT) -o $(NAME)
 
-bonus:		
-				@make -C ./bonus
-
 run_libft:	
 				@make -C $(PATH_LIB)
 
@@ -30,15 +26,13 @@ $(OBJ_DIR)/%.o:	%.c $(HEADER)
 				$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-				$(RM) ${OBG} ${OBG_BONUS}
+				$(RM) ${OBG}
 				@make -C $(PATH_LIB) clean
-				@make -C ./bonus clean
 
 fclean:			clean
-				$(RM) $(NAME) $(NAME_BONUS)
+				$(RM) $(NAME) $(OBJ_DIR)
 				@make -C $(PATH_LIB) fclean
-				@make -C ./bonus fclean
 
 re:				fclean all
 
-.PHONY: clean fclean re all bonus
+.PHONY: clean fclean re all
