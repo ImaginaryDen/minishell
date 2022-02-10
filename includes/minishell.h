@@ -18,13 +18,6 @@ typedef struct s_info
 	char **comands;
 }t_info;
 
-typedef struct s_comands
-{
-	char **comands;
-	int size;
-	int *end;
-}t_comands;
-
 typedef struct s_pipe_data
 {
 	int		fd_in_out[3];
@@ -33,14 +26,23 @@ typedef struct s_pipe_data
 	char	**env;
 }	t_pipe_data;
 
+char **g_envp;
+
 # define READ_FD 0
 # define WRITE_FD 1
 # define ERR_FD 2
 
-int		parser(char *line, t_info *info);
-int		executor(t_comands *comands, t_info *info);
+t_pipe_data *parser(char *line, t_info *info);
+int		executor(t_pipe_data *comand);
 int		ft_run_cmds(t_pipe_data *cmds, int size);
 void	ft_free_dable_arr(char **strs);
 void	check_cmd(t_pipe_data *data);
+void	ft_echo(char **arg);
+void	ft_env(char **arg);
+int		return_error(char *cmd, char *msg, int ret, int status);
+int		exev_include(t_pipe_data *data);
+int		check(char **args);
+char	*get_env(char *str);
+char	**split_isspace(char const *s);
 
 #endif
