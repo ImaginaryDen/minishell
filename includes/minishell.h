@@ -22,8 +22,7 @@ typedef struct s_pipe_data
 {
 	int		fd_in_out[3];
 	int		fd_close[2];
-	char	**cmd_ard;
-	char	**env;
+	char	**cmd_arg;
 }	t_pipe_data;
 
 char **g_envp;

@@ -28,17 +28,17 @@ void check_cmd(t_pipe_data *data)
 	char	**paths;
 	char	*path_cmd;
 
-	if (!ft_strncmp(data->cmd_ard[0], "./", 2) || data->cmd_ard[0][0] == '/')
+	if (!ft_strncmp(data->cmd_arg[0], "./", 2) || data->cmd_arg[0][0] == '/')
 		return ;
 	paths = ft_get_paths(g_envp);
 	i = 0;
 	while (paths[i])
 	{
-		path_cmd = ft_full_path(paths[i], data->cmd_ard[0]);
+		path_cmd = ft_full_path(paths[i], data->cmd_arg[0]);
 		if (!access(path_cmd, X_OK))
 		{
-			free(data->cmd_ard[0]);
-			data->cmd_ard[0] = path_cmd;
+			free(data->cmd_arg[0]);
+			data->cmd_arg[0] = path_cmd;
 			break ;
 		}
 		free(path_cmd);

@@ -20,17 +20,17 @@ int	ft_cmd(t_pipe_data *data)
 	if (exev_include(data))
 		exit(ret);
 	check_cmd(data);
-	if (!check(data->cmd_ard) && data->cmd_ard != NULL)
-		ret = execve(data->cmd_ard[0], data->cmd_ard, g_envp);
+	if (!check(data->cmd_arg) && data->cmd_arg != NULL)
+		ret = execve(data->cmd_arg[0], data->cmd_arg, g_envp);
 	exit(ret);
 }
 
 void	free_cmd(t_pipe_data *data)
 {
-	if (data->cmd_ard)
+	if (data->cmd_arg)
 	{
-		ft_free_dable_arr(data->cmd_ard);
-		data->cmd_ard = NULL;
+		ft_free_dable_arr(data->cmd_arg);
+		data->cmd_arg = NULL;
 	}
 }
 

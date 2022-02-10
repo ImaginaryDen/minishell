@@ -20,10 +20,10 @@ int exev_include(t_pipe_data *data)
 	void (*command[])(char **) = {ft_echo, ft_env};
 	int	i;
 
-	i = get_command(data->cmd_ard[0]);
+	i = get_command(data->cmd_arg[0]);
 	if (i >= 0)
 	{
-		command[i](data->cmd_ard);
+		command[i](data->cmd_arg);
 		return (1);
 	}
 	return (0);

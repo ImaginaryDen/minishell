@@ -171,7 +171,7 @@ void	cmds_split(char *line, t_pipe_data *cmds, int size)
 	cmds_unsplitted = ft_split(line, ';');
 	while (i < size)
 	{
-		cmds[i].cmd_ard = split_isspace(cmds_unsplitted[i]);
+		cmds[i].cmd_arg = split_isspace(cmds_unsplitted[i]);
 		i++;
 	}
 	ft_free_array(cmds_unsplitted);
@@ -192,7 +192,7 @@ t_pipe_data *parser(char *line, t_info *info)
 		return (NULL);
 	}
 	cmds = malloc(sizeof(t_pipe_data) * (size + 1));
-	cmds[size].cmd_ard = NULL;
+	cmds[size].cmd_arg = NULL;
 //	printf("OK\n");
 	while (line[i])
 	{
