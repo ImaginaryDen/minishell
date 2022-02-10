@@ -72,21 +72,23 @@ char	*env_var(char *line, int *i, char **env)
 	j = (*i) + 1;
 	if (!is_key(line[j]))
 		return (line);
-	while (ft_isalnum(line[j]))
+	while (line[j] && ft_isalnum(line[j]))
 		j++;
 	len = j - (*i) - 1;
 	key = ft_substr(line, (*i) + 1, len);
+	printf("%d - %s\n", len, key);
 	j = 0;
 	found = 0;
 	while (env[j])
 	{
-		if (ft_strncmp(env[j], key, len) == 0 && env[j][len] == '=')
+		if ((ft_strncmp(env[j], key, len) == 0) && (env[j][len] == '='))
 		{
 			found = 1;
 			break ;
 		}
 		j++;
 	}
+//	printf("OK $\n");
 	if (!found)
 	{
 		line = line_shift(line, *i, 1);
@@ -191,14 +193,15 @@ t_pipe_data *parser(char *line, t_info *info)
 	}
 	cmds = malloc(sizeof(t_pipe_data) * (size + 1));
 	cmds[size].cmd_ard = NULL;
+//	printf("OK\n");
 	while (line[i])
 	{
 		if ((line[i] == '\'') || (line[i] == '\"'))
-			line = quotation(line, &i, info->env);
+			line = quotation(line, &i, g_envp);
 		else if (line[i] == '\\')
 			line = slash(line, i);
 		else if (line[i] == '$')
-			line = env_var(line, &i, info->env);
+			line = env_var(line, &i, g_envp);
 		i++;
 	}
 	line = ft_realloc_str(line, ft_strlen(line));
