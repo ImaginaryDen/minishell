@@ -13,7 +13,7 @@ int	executor(t_pipe_data *comand)
 	free(comand);
 }
 
-void init_command(t_pipe_data *commands)
+void init_cmds_fds(t_pipe_data *commands)
 {
 	int i;
 
