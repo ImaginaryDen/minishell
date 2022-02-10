@@ -76,7 +76,7 @@ char	*env_var(char *line, int *i, char **env)
 		j++;
 	len = j - (*i) - 1;
 	key = ft_substr(line, (*i) + 1, len);
-	printf("%d - %s\n", len, key);
+//	printf("%d - %s\n", len, key);
 	j = 0;
 	found = 0;
 	while (env[j])
