@@ -71,13 +71,14 @@ int	ft_run_cmds(t_pipe_data *cmds, int size)
 	i = 0;
 	while (i < size)
 	{
+		printf("%d\n", i);
 		if (get_fork(cmds + i, pid_cmd, i))
 			break ;
 		if (!pid_cmd[i])
 			ft_cmd(cmds + i);
-		if (cmds[i].fd_in_out[WRITE_FD] > 0)
+		if (cmds[i].fd_in_out[WRITE_FD] != STDOUT_FILENO)
 			close(cmds[i].fd_in_out[WRITE_FD]);
-		if (cmds[i].fd_in_out[READ_FD] > 0)
+		if (cmds[i].fd_in_out[READ_FD] != STDIN_FILENO)
 			close(cmds[i].fd_in_out[READ_FD]);
 		i++;
 	}
