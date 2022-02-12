@@ -1,5 +1,41 @@
 #include "minishell.h"
 
+int ft_one_cmd(t_pipe_data *data)
+{
+	int pid;
+	int	save_in;
+	int	save_out;
+	int	save_err;
+
+	save_in = dup(STDIN_FILENO);
+	save_out = dup(STDOUT_FILENO);
+	save_err = dup(STDERR_FILENO);
+
+	dup2(data->fd_in_out[READ_FD], STDIN_FILENO);
+	dup2(data->fd_in_out[WRITE_FD], STDOUT_FILENO);
+	dup2(data->fd_in_out[ERR_FD], STDERR_FILENO);
+	check_cmd(data);
+	check(data->cmd_arg);
+	if (exev_include(data))
+		return (0);
+	else
+	{
+		pid = fork();
+		if (!pid)
+			execve(data->cmd_arg[0], data->cmd_arg, g_envp);
+		waitpid(pid, NULL, 0);
+	}
+	dup2(save_in, data->fd_in_out[READ_FD]);
+	dup2(save_out, data->fd_in_out[WRITE_FD]);
+	dup2(save_err, data->fd_in_out[ERR_FD]);
+	if (data->fd_in_out[READ_FD] != STDIN_FILENO)
+		close(data->fd_in_out[READ_FD]);
+	if (data->fd_in_out[WRITE_FD] != STDOUT_FILENO)
+		close(data->fd_in_out[WRITE_FD]);
+	if (data->fd_in_out[ERR_FD] != STDERR_FILENO)
+		close(data->fd_in_out[ERR_FD]);
+}
+
 int	ft_cmd(t_pipe_data *data)
 {
 	int		ret;
@@ -19,11 +55,10 @@ int	ft_cmd(t_pipe_data *data)
 	ret = 0;
 	errno = 0;
 	if (exev_include(data))
-		exit(ret);
+		exit(ret);	
 	check_cmd(data);
 	if (!check(data->cmd_arg) && data->cmd_arg != NULL)
 		ret = execve(data->cmd_arg[0], data->cmd_arg, g_envp);
-	exit(ret);
 }
 
 void	free_cmd(t_pipe_data *data)
@@ -76,7 +111,10 @@ int	ft_run_cmds(t_pipe_data *cmds, int size)
 		if (get_fork(cmds + i, pid_cmd, i))
 			break ;
 		if (!pid_cmd[i])
+		{
 			ft_cmd(cmds + i);
+			exit(0);
+		}
 		if (cmds[i].fd_in_out[WRITE_FD] != STDOUT_FILENO)
 			close(cmds[i].fd_in_out[WRITE_FD]);
 		if (cmds[i].fd_in_out[READ_FD] != STDIN_FILENO)
