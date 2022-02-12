@@ -43,5 +43,7 @@ int		exev_include(t_pipe_data *data);
 int		check(char **args);
 char	*get_env(char *str);
 char	**split_isspace(char const *s);
+int		ft_cmd(t_pipe_data *data);
+int ft_one_cmd(t_pipe_data *data);
 
 #endif

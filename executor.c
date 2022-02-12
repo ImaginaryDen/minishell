@@ -7,7 +7,10 @@ int	executor(t_pipe_data *comand)
 	size = 0;
 	while(comand[size].cmd_arg != NULL)
 		size++;
-	ft_run_cmds(comand, size);
+	if(size == 1)
+		ft_one_cmd(comand);
+	else
+		ft_run_cmds(comand, size);
 	for(int i = 0; i < size; i++)
 		ft_free_dable_arr(comand[i].cmd_arg);
 	free(comand);
