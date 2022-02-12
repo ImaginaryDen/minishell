@@ -243,7 +243,7 @@ t_pipe_data *parser(char *line, t_info *info)
 		}
 		cmds = malloc(sizeof(t_pipe_data) * (size + 1));
 		cmds[size].cmd_arg = NULL;
-		init_cmds_fds(cmds);
+		init_cmds_fds(cmds, size);
 		cmds_split(commands[i], cmds, size);
 		printf("*\n");
 		executor(cmds);

@@ -12,6 +12,7 @@ int	ft_cmd(t_pipe_data *data)
 			close(data->fd_close[i]);
 		i++;
 	}
+	printf("in- %d\nout- %d\n",data->fd_in_out[READ_FD], data->fd_in_out[WRITE_FD]);
 	dup2(data->fd_in_out[READ_FD], STDIN_FILENO);
 	dup2(data->fd_in_out[WRITE_FD], STDOUT_FILENO);
 	dup2(data->fd_in_out[ERR_FD], STDERR_FILENO);
