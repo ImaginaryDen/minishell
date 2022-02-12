@@ -44,6 +44,7 @@ int		check(char **args);
 char	*get_env(char *str);
 char	**split_isspace(char const *s);
 int		ft_cmd(t_pipe_data *data);
-int ft_one_cmd(t_pipe_data *data);
+int		ft_one_cmd(t_pipe_data *data);
+void	init_cmds_fds(t_pipe_data *commands, int size);
 
 #endif

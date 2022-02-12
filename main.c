@@ -35,6 +35,6 @@ int main(int argc, char **argv, char **envp)
 		line = get_next_line(1);
 		if (line == NULL)
 			break;
-		executor(parser(line, &info));
+		parser(line, &info);
 	}
 }

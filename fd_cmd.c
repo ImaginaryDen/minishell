@@ -28,9 +28,12 @@ int ft_one_cmd(t_pipe_data *data)
 	dup2(save_in, data->fd_in_out[READ_FD]);
 	dup2(save_out, data->fd_in_out[WRITE_FD]);
 	dup2(save_err, data->fd_in_out[ERR_FD]);
-	close(data->fd_in_out[READ_FD]);
-	close(data->fd_in_out[WRITE_FD]);
-	close(data->fd_in_out[ERR_FD]);
+	if (data->fd_in_out[READ_FD] != STDIN_FILENO)
+		close(data->fd_in_out[READ_FD]);
+	if (data->fd_in_out[WRITE_FD] != STDOUT_FILENO)
+		close(data->fd_in_out[WRITE_FD]);
+	if (data->fd_in_out[ERR_FD] != STDERR_FILENO)
+		close(data->fd_in_out[ERR_FD]);
 }
 
 int	ft_cmd(t_pipe_data *data)

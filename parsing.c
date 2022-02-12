@@ -23,14 +23,13 @@ char	*ft_realloc_str(char *old, int size)
 	return (new);
 }
 
-char	*line_shift(char *line, int i, int shift)
+void	line_shift(char *line, int i, int shift)
 {
 	while (line[i + shift - 1])
 	{
 		line[i] = line[i + shift];
 		i++;
 	}
-	return (line);
 }
 
 int	is_key(char ch)
@@ -91,11 +90,11 @@ char	*env_var(char *line, int *i, char **env)
 //	printf("OK $\n");
 	if (!found)
 	{
-		line = line_shift(line, *i, 1);
+		line_shift(line, *i, 1);
 		if (ft_isdigit(key[0]))
-			line = line_shift(line, *i, 1);
+			line_shift(line, *i, 1);
 		else
-			line = line_shift(line, *i, len);
+			line_shift(line, *i, len);
 		(*i)--;
 	}
 	else
@@ -106,10 +105,9 @@ char	*env_var(char *line, int *i, char **env)
 	return (line);
 }
 
-char	*slash(char *line, int i)
+void	slash(char *line, int i)
 {
-	line = line_shift(line, i, 1);
-	return (line);
+	line_shift(line, i, 1);
 }
 
 char	*quotation(char *line, int *i, char **env)
@@ -117,18 +115,18 @@ char	*quotation(char *line, int *i, char **env)
 	char	q_type;
 
 	q_type = line[*i];
-	line = line_shift(line, *i, 1);
+	line_shift(line, *i, 1);
 	while (line[*i])
 	{
 		if (line[*i] == q_type)
 			break ;
 		else if ((q_type == '\"') && (line[*i] == '\\') && (line[*i + 1] == '\"' || line[*i + 1] == '$' || line[*i + 1] == '\\'))
-			line = slash(line, *i);
+			slash(line, *i);
 		else if ((q_type == '\"') && (line[*i] == '$'))
 			line = env_var(line, i, env);
 		(*i)++;
 	}
-	line = line_shift(line, *i, 1);
+	line_shift(line, *i, 1);
 	(*i)--;
 	return (line);
 }
@@ -162,50 +160,97 @@ void	ft_free_array(char **array)
 	free(array);
 }
 
+void	define_fds(t_pipe_data *cmds)
+{
+	int	end[2];
+
+	pipe(end);
+	printf("PUPA\n");
+	cmds[0].fd_in_out[WRITE_FD] = end[WRITE_FD];
+	cmds[1].fd_in_out[READ_FD] = end[READ_FD];
+	if (cmds[0].fd_close[0] == -1)
+		cmds[0].fd_close[0] = cmds[1].fd_in_out[READ_FD];
+	else
+		cmds[0].fd_close[1] = cmds[1].fd_in_out[READ_FD];
+	if (cmds[1].fd_close[0] == -1)
+		cmds[1].fd_close[0] = cmds[0].fd_in_out[WRITE_FD];
+	else
+		cmds[1].fd_close[1] = cmds[0].fd_in_out[WRITE_FD];
+}
+
 void	cmds_split(char *line, t_pipe_data *cmds, int size)
 {
 	int	i;
 	char	**cmds_unsplitted;
 
 	i = 0;
-	cmds_unsplitted = ft_split(line, ';');
+	cmds_unsplitted = ft_split(line, '|');
 	while (i < size)
 	{
+		if ((size != 1) && (i != size - 1))
+			define_fds(cmds + i);
+		if (i == size - 1 && (size != 1))
+			cmds[i].fd_close[0] = cmds[i - 1].fd_in_out[WRITE_FD];
 		cmds[i].cmd_arg = split_isspace(cmds_unsplitted[i]);
 		i++;
 	}
 	ft_free_array(cmds_unsplitted);
 }
 
+int ft_define_size(char **arr)
+{
+	int	i;
+
+	i = 0;
+	while (arr[i])
+		i++;
+	return (i);
+}
+
 t_pipe_data *parser(char *line, t_info *info)
 {
 	int		i;
+	int		j;
 	char	*new_line;
 	int		size;
 	t_pipe_data *cmds;
+	char	**commands;
 
 	i = 0;
-	size = preparser(line);
-	if (size == -1)
+	if (preparser(line) == -1)
 	{
 		// print error;
 		return (NULL);
 	}
-	cmds = malloc(sizeof(t_pipe_data) * (size + 1));
-	cmds[size].cmd_arg = NULL;
+	commands = ft_split(line, ';');
+//	size = ft_define_size(commands);
+	size = 1;
 //	printf("OK\n");
-	while (line[i])
+	j = 0;
+	while (commands[i])
 	{
-		if ((line[i] == '\'') || (line[i] == '\"'))
-			line = quotation(line, &i, g_envp);
-		else if (line[i] == '\\')
-			line = slash(line, i);
-		else if (line[i] == '$')
-			line = env_var(line, &i, g_envp);
+		while (commands[i][j])
+		{
+			if ((commands[i][j] == '\'') || (commands[i][j] == '\"'))
+				commands[i] = quotation(commands[i], &j, g_envp);
+			else if (commands[i][j] == '\\')
+				slash(commands[i], j);
+			else if (commands[i][j] == '$')
+				commands[i] = env_var(commands[i], &j, g_envp);
+			else if (commands[i][j] == '|')
+				size++;
+			j++;
+		}
+		cmds = malloc(sizeof(t_pipe_data) * (size + 1));
+		cmds[size].cmd_arg = NULL;
+		init_cmds_fds(cmds, size);
+		cmds_split(commands[i], cmds, size);
+		printf("*\n");
+		executor(cmds);
 		i++;
+		j = 0;
 	}
-	line = ft_realloc_str(line, ft_strlen(line));
-	cmds_split(line, cmds, size);
+	//line = ft_realloc_str(line, ft_strlen(line));
 	free(line);
 	return (cmds);
 }

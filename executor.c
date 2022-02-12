@@ -16,12 +16,12 @@ int	executor(t_pipe_data *comand)
 	free(comand);
 }
 
-void init_command(t_pipe_data *commands)
+void init_cmds_fds(t_pipe_data *commands, int size)
 {
 	int i;
 
 	i = 0;
-	while(commands[i].cmd_arg != NULL)
+	while(i < size)
 	{
 		commands[i].fd_in_out[READ_FD] = STDIN_FILENO;
 		commands[i].fd_in_out[WRITE_FD] = STDOUT_FILENO;
