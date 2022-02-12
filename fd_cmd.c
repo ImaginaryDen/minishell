@@ -110,9 +110,9 @@ int	ft_run_cmds(t_pipe_data *cmds, int size)
 			ft_cmd(cmds + i);
 			exit(0);
 		}
-		if (cmds[i].fd_in_out[WRITE_FD] > 0)
+		if (cmds[i].fd_in_out[WRITE_FD] != STDOUT_FILENO)
 			close(cmds[i].fd_in_out[WRITE_FD]);
-		if (cmds[i].fd_in_out[READ_FD] > 0)
+		if (cmds[i].fd_in_out[READ_FD] != STDIN_FILENO)
 			close(cmds[i].fd_in_out[READ_FD]);
 		i++;
 	}
