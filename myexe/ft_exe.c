@@ -2,13 +2,13 @@
 
 int get_command(char *str)
 {
-	const char *comands[] = {"echo", "env", NULL};
+	const char *comands[] = {"echo", "env", "pwd", NULL};
 	int i;
 
 	i = 0;
 	while(comands[i])
 	{
-		if (!ft_strncmp(str, comands[i], ft_strlen(comands[i] + 1)))
+		if (!ft_strncmp(str, comands[i], ft_strlen(comands[i]) + 1))
 			return (i);
 		i++;
 	}
@@ -17,7 +17,7 @@ int get_command(char *str)
 
 int exev_include(t_pipe_data *data)
 {
-	void (*command[])(char **) = {ft_echo, ft_env};
+	void (*command[])(char **) = {ft_echo, ft_env, ft_pwd};
 	int	i;
 
 	i = get_command(data->cmd_arg[0]);

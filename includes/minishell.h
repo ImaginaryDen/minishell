@@ -46,5 +46,7 @@ char	**split_isspace(char const *s);
 int		ft_cmd(t_pipe_data *data);
 int		ft_one_cmd(t_pipe_data *data);
 void	init_cmds_fds(t_pipe_data *commands, int size);
+char	*get_env_name(char *name);
+void	ft_pwd(char **arg);
 
 #endif
