@@ -4,7 +4,7 @@ void ft_pwd(char **arg)
 {
 	char *path;
 	
-	path = get_env_name("PWD");
+	path = get_env("PWD");
 	if (!path)
 		return;
 	path = ft_strchr(path, '=');

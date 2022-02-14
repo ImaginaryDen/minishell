@@ -29,7 +29,7 @@ int main(int argc, char **argv, char **envp)
 
 	info.status = 1;
 	g_envp = copy_envp(envp);
-
+	g_status = 0;
 	while (info.status)
 	{
 		ft_putstr_fd("$>", 1);

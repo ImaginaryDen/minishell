@@ -1,5 +1,17 @@
 #include "minishell.h"
 
+void		status_child(int pid)
+{
+	if (WIFEXITED(pid))
+		g_status = WEXITSTATUS(pid);
+	if (WIFSIGNALED(pid))
+	{
+		g_status = WTERMSIG(pid);
+		if (g_status != 131)
+			g_status += 128;
+	}
+}
+
 int ft_one_cmd(t_pipe_data *data)
 {
 	int pid;
@@ -24,6 +36,7 @@ int ft_one_cmd(t_pipe_data *data)
 		if (!pid)
 			execve(data->cmd_arg[0], data->cmd_arg, g_envp);
 		waitpid(pid, NULL, 0);
+		status_child(pid);
 	}
 	dup2(save_in, data->fd_in_out[READ_FD]);
 	dup2(save_out, data->fd_in_out[WRITE_FD]);
@@ -89,7 +102,10 @@ void	ft_wait_all_pid(pid_t *pid_cmd, int size)
 	while (i < size)
 	{
 		if(pid_cmd[i])
+		{
 			waitpid(pid_cmd[i], &status, 0);
+			status_child(pid_cmd[i]);
+		}
 		i++;
 	}
 }

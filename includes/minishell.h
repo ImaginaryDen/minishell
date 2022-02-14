@@ -25,7 +25,8 @@ typedef struct s_pipe_data
 	char	**cmd_arg;
 }	t_pipe_data;
 
-char **g_envp;
+char	**g_envp;
+int		g_status;
 
 # define READ_FD 0
 # define WRITE_FD 1
@@ -46,7 +47,10 @@ char	**split_isspace(char const *s);
 int		ft_cmd(t_pipe_data *data);
 int		ft_one_cmd(t_pipe_data *data);
 void	init_cmds_fds(t_pipe_data *commands, int size);
-char	*get_env_name(char *name);
 void	ft_pwd(char **arg);
+void	status_child(int pid);
+int		set_env(char *env, char *new_env);
+void	ft_cd(char **args);
+
 
 #endif
