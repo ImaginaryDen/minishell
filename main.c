@@ -32,6 +32,7 @@ int main(int argc, char **argv, char **envp)
 
 	while (info.status)
 	{
+		ft_putstr_fd("$>", 1);
 		line = get_next_line(1);
 		if (line == NULL)
 			break;

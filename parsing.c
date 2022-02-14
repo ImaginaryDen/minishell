@@ -165,7 +165,6 @@ void	define_fds(t_pipe_data *cmds)
 	int	end[2];
 
 	pipe(end);
-	printf("PUPA\n");
 	cmds[0].fd_in_out[WRITE_FD] = end[WRITE_FD];
 	cmds[1].fd_in_out[READ_FD] = end[READ_FD];
 	if (cmds[0].fd_close[0] == -1)
@@ -245,7 +244,6 @@ t_pipe_data *parser(char *line, t_info *info)
 		cmds[size].cmd_arg = NULL;
 		init_cmds_fds(cmds, size);
 		cmds_split(commands[i], cmds, size);
-		printf("*\n");
 		executor(cmds);
 		i++;
 		j = 0;
