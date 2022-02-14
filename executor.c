@@ -5,15 +5,18 @@ int	executor(t_pipe_data *comand)
 	int size;
 
 	size = 0;
+	if (!comand)
+		return (1);
 	while(comand[size].cmd_arg != NULL)
 		size++;
 	if(size == 1)
 		ft_one_cmd(comand);
-	else
+	else if (size > 1)
 		ft_run_cmds(comand, size);
 	for(int i = 0; i < size; i++)
 		ft_free_dable_arr(comand[i].cmd_arg);
 	free(comand);
+	return (0);
 }
 
 void init_cmds_fds(t_pipe_data *commands, int size)
