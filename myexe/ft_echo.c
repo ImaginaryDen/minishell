@@ -8,13 +8,14 @@ void	ft_echo(char **arg)
 
 	i = 1;
 	is_n = 0;
+	g_status = 0;
 	while(arg[i])
 	{
 		j = 1;
 		if (arg[i][0] == '-')
 			while (arg[i][j] && arg[i][j] == 'n')
 				j++;
-		if (arg[i][j] != '\0')
+		if (arg[i][j] != '\0' || j == 1)
 			break;
 		is_n = 1;
 		i++;

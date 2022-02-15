@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-char *get_env(char *name)
+char	*get_env(char *name)
 {
 	int i;
 	int len;
@@ -41,7 +41,7 @@ void	env_sort()
 	}
 }
 
-int			set_env(char *env, char *new_env)
+int	set_env(char *env, char *new_env)
 {
 	char	*tmp;
 	int		i;
@@ -65,5 +65,28 @@ int			set_env(char *env, char *new_env)
 	tmp = ft_strjoin(env, "=");
 	g_envp[i] = ft_strjoin(tmp, new_env);
 	free(tmp);
+	return(0);
+}
+
+int	unset_env(char *env)
+{
+	int		i;
+	int		len;
+
+	if (!env)
+		return (0);
+	len = ft_strlen(env);
+	i = 0;
+	while (g_envp[i] && ft_strncmp(env, g_envp[i], len))
+		i++;
+	if (!g_envp[i])
+		return (1);
+	free(g_envp[i]);
+	while(g_envp[i])
+	{
+		g_envp[i] = g_envp[i + 1];
+		i++;
+	}
+	g_envp = ft_realloc(g_envp, i * sizeof(char *), (i + 1) * sizeof(char *));
 	return(0);
 }

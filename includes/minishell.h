@@ -52,5 +52,9 @@ void	status_child(int pid);
 int		set_env(char *env, char *new_env);
 void	ft_cd(char **args);
 void	ft_exit(char **argv);
+int		set_env(char *env, char *new_env);
+void	ft_export(char **args);
+int		unset_env(char *env);
+void	ft_unset(char **args);
 
 #endif
