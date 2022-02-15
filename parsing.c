@@ -268,7 +268,7 @@ t_pipe_data *parser(char *line, t_info *info)
 				len = ft_size_arr(cmds[size - 1].cmd_arg);
 				cmds[size - 1].cmd_arg = ft_realloc(cmds[size - 1].cmd_arg, sizeof(char *) * len, sizeof(char *) * (len + 2));
 				cmds[size - 1].cmd_arg[len] = ft_substr(commands[i], start, j - start);
-				printf("STR: %s\n", cmds[size - 1].cmd_arg[len]);
+			//	printf("STR: %s\n", cmds[size - 1].cmd_arg[len]);
 				start = j + 1;
 			}
 			else if ((commands[i][j] == '|' || ft_isspace(commands[i][j])) && ((j - start) == 0))
@@ -286,18 +286,18 @@ t_pipe_data *parser(char *line, t_info *info)
 	//	cmds[size].cmd_arg = NULL;
 	//	init_cmds_fds(cmds, size);
 		cmds_split(commands[i], cmds, size);
-		int n = 0;
-		int z = 0;
-		while (cmds[n].cmd_arg)
-		{
-			while (cmds[n].cmd_arg[z])
-			{
-				printf("%s\n", cmds[n].cmd_arg[z]);
-				z++;
-			}
-			printf("***end***\n");
-			n++;
-		}
+		// int n = 0;
+		// int z = 0;
+		// while (cmds[n].cmd_arg)
+		// {
+		// 	while (cmds[n].cmd_arg[z])
+		// 	{
+		// 		printf("%s\n", cmds[n].cmd_arg[z]);
+		// 		z++;
+		// 	}
+		// 	printf("***end***\n");
+		// 	n++;
+		// }
 		executor(cmds);
 		i++;
 		j = 0;
