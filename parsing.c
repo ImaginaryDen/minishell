@@ -140,7 +140,7 @@ int	preparser(char *line)
 	count = 1;
 	while (line[i])
 	{
-		if (line[i] == ';' && line[i + 1])
+		if (i != 0 && line[i] == '|' && line[i + 1])
 			count++;
 		i++;
 	}
@@ -196,14 +196,27 @@ void	cmds_split(char *line, t_pipe_data *cmds, int size)
 	ft_free_array(cmds_unsplitted);
 }
 
-int ft_define_size(char **arr)
+int ft_define_size(char *line)
 {
 	int	i;
+	int count;
 
 	i = 0;
-	while (arr[i])
+	count = 1;
+	while (line[i])
+	{
+		if (i != 0 && line[i] == '|' && line[i + 1])
+			count++;
 		i++;
-	return (i);
+	}
+	return (count);
+}
+
+int	ft_isspace(char ch)
+{
+	if ((ch >= 9 && ch <= 13) || ch == 32)
+		return (1);
+	return (0);
 }
 
 t_pipe_data *parser(char *line, t_info *info)
@@ -214,6 +227,9 @@ t_pipe_data *parser(char *line, t_info *info)
 	int		size;
 	t_pipe_data *cmds;
 	char	**commands;
+	int		start;
+	int		end;
+	char	*substr;
 
 	i = 0;
 	if (preparser(line) == -1)
@@ -223,11 +239,16 @@ t_pipe_data *parser(char *line, t_info *info)
 	}
 	commands = ft_split(line, ';');
 //	size = ft_define_size(commands);
-	size = 1;
+//	preparser(line);
 //	printf("OK\n");
 	j = 0;
 	while (commands[i])
 	{
+		size = ft_define_size(commands[i]);
+		cmds = malloc(sizeof(t_pipe_data) * (size + 1));
+		cmds[size].cmd_arg = NULL;
+		init_cmds_fds(cmds, size);
+		start = j;
 		while (commands[i][j])
 		{
 			if ((commands[i][j] == '\'') || (commands[i][j] == '\"'))
@@ -238,9 +259,13 @@ t_pipe_data *parser(char *line, t_info *info)
 				commands[i] = env_var(commands[i], &j, g_envp);
 			else if (commands[i][j] == '|')
 				size++;
+			if (!ft_isspace(commands[i][j - 1]))
+			{
+				substr = ft_substr(commands[i], start, j - 1 - start);
+				cmds[size].cmd_arg
+			}
 			j++;
 		}
-		cmds = malloc(sizeof(t_pipe_data) * (size + 1));
 		cmds[size].cmd_arg = NULL;
 		init_cmds_fds(cmds, size);
 		cmds_split(commands[i], cmds, size);
