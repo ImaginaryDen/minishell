@@ -16,6 +16,31 @@ char *get_env(char *name)
 	return (NULL);
 }
 
+void	env_sort()
+{
+	char	*tmp;
+	int		i;
+	int		j;
+
+	tmp = NULL;
+	i = 0;
+	while (g_envp[i])
+	{
+		j = i + 1;
+		while (g_envp[j])
+		{
+			if(ft_strncmp(g_envp[i], g_envp[j], ft_strlen(g_envp[i])) > 0)
+			{
+				tmp = g_envp[i];
+				g_envp[i] = g_envp[j];
+				g_envp[j] = tmp;
+			}
+			j++;
+		}
+		i++;
+	}
+}
+
 int			set_env(char *env, char *new_env)
 {
 	char	*tmp;
