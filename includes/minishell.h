@@ -39,7 +39,7 @@ void	ft_free_dable_arr(char **strs);
 void	check_cmd(t_pipe_data *data);
 void	ft_echo(char **arg);
 void	ft_env(char **arg);
-int		return_error(char *cmd, char *msg, int ret, int status);
+int		return_error(char *cmd, char *msg, int status);
 int		exev_include(t_pipe_data *data);
 int		check(char **args);
 char	*get_env(char *str);
@@ -51,6 +51,6 @@ void	ft_pwd(char **arg);
 void	status_child(int pid);
 int		set_env(char *env, char *new_env);
 void	ft_cd(char **args);
-
+void	ft_exit(char **argv);
 
 #endif
