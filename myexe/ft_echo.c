@@ -8,6 +8,7 @@ void	ft_echo(char **arg)
 
 	i = 1;
 	is_n = 0;
+	g_status = 0;
 	while(arg[i])
 	{
 		j = 1;

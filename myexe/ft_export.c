@@ -7,6 +7,7 @@ void	ft_export(char **args)
 	char	*end_name;
 
 	i = 1;
+	g_status = 0;
 	while (args[i])
 	{
 		end_name = ft_strchr(args[i], '=');

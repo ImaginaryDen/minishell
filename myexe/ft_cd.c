@@ -62,11 +62,13 @@ void ft_cd(char **args)
 	char	*home;
 
 	home = NULL;
+	g_status = 0;
 	if (!args[1] || !ft_strncmp(args[1], "~", 1) || !ft_strncmp(args[1], "--", 3))
 	{
 		if (!(home = get_env("HOME")))
 		{
 			ft_putstr_fd("minishell: cd: HOME not set\n", 2);
+			g_status = 1;
 			return ;
 		}
 		set_directory(ft_strchr(home, '=') + 1);

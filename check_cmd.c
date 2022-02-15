@@ -56,7 +56,7 @@ int	check(char **args)
 	if (stat(args[0], &f) != -1)
 	{
 		if (f.st_mode & S_IFDIR)
-			return (return_error(args[0], ": Is a directory\n",126));
+			return (return_error(args[0], ": Is a directory\n", 126));
 		if (f.st_mode & S_IXUSR && f.st_mode & S_IRUSR)
 			return (0);
 		return (return_error(args[0], ": Permission denied\n", 126));
