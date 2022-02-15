@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	ft_isspace(char ch)
+int	ft_isspace_s(char ch)
 {
 	if ((ch >= 9 && ch <= 13) || ch == 32)
 		return (1);
@@ -14,11 +14,11 @@ static size_t	ft_count_words(char const *s)
 	count = 0;
 	while (s && *s)
 	{
-		while (ft_isspace(*s))
+		while (ft_isspace_s(*s))
 			s++;
 		if (*s)
 			count++;
-		while (*s && !ft_isspace(*s))
+		while (*s && !ft_isspace_s(*s))
 			s++;
 	}
 	return (count);
@@ -33,10 +33,10 @@ static int	ft_add_words(char const *s, char **words)
 	start = (char *) s;
 	while (start && *start)
 	{
-		while (ft_isspace(*start))
+		while (ft_isspace_s(*start))
 			start++;
 		end = start;
-		while (*end && !ft_isspace(*end))
+		while (*end && !ft_isspace_s(*end))
 			end++;
 		if (*start)
 		{

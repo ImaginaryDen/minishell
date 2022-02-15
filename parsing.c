@@ -183,17 +183,17 @@ void	cmds_split(char *line, t_pipe_data *cmds, int size)
 	char	**cmds_unsplitted;
 
 	i = 0;
-	cmds_unsplitted = ft_split(line, '|');
+//	cmds_unsplitted = ft_split(line, '|');
 	while (i < size)
 	{
 		if ((size != 1) && (i != size - 1))
 			define_fds(cmds + i);
 		if (i == size - 1 && (size != 1))
 			cmds[i].fd_close[0] = cmds[i - 1].fd_in_out[WRITE_FD];
-		cmds[i].cmd_arg = split_isspace(cmds_unsplitted[i]);
+//		cmds[i].cmd_arg = split_isspace(cmds_unsplitted[i]);
 		i++;
 	}
-	ft_free_array(cmds_unsplitted);
+//	ft_free_array(cmds_unsplitted);
 }
 
 int ft_define_size(char *line)
@@ -210,6 +210,16 @@ int ft_define_size(char *line)
 		i++;
 	}
 	return (count);
+}
+
+int	ft_size_arr(char **arr)
+{
+	int	i;
+
+	i = 0;
+	while (arr && arr[i])
+		i++;
+	return (i);
 }
 
 int	ft_isspace(char ch)
@@ -230,6 +240,7 @@ t_pipe_data *parser(char *line, t_info *info)
 	int		start;
 	int		end;
 	char	*substr;
+	int		len;
 
 	i = 0;
 	if (preparser(line) == -1)
@@ -249,8 +260,19 @@ t_pipe_data *parser(char *line, t_info *info)
 		cmds[size].cmd_arg = NULL;
 		init_cmds_fds(cmds, size);
 		start = j;
+		size = 1;
 		while (commands[i][j])
 		{
+			if ((commands[i][j] == '|' || ft_isspace(commands[i][j])) && ((j - start) > 0))
+			{
+				len = ft_size_arr(cmds[size - 1].cmd_arg);
+				cmds[size - 1].cmd_arg = ft_realloc(cmds[size - 1].cmd_arg, sizeof(char *) * len, sizeof(char *) * (len + 2));
+				cmds[size - 1].cmd_arg[len] = ft_substr(commands[i], start, j - start);
+				printf("STR: %s\n", cmds[size - 1].cmd_arg[len]);
+				start = j + 1;
+			}
+			else if ((commands[i][j] == '|' || ft_isspace(commands[i][j])) && ((j - start) == 0))
+				start++;
 			if ((commands[i][j] == '\'') || (commands[i][j] == '\"'))
 				commands[i] = quotation(commands[i], &j, g_envp);
 			else if (commands[i][j] == '\\')
@@ -259,19 +281,27 @@ t_pipe_data *parser(char *line, t_info *info)
 				commands[i] = env_var(commands[i], &j, g_envp);
 			else if (commands[i][j] == '|')
 				size++;
-			if (!ft_isspace(commands[i][j - 1]))
-			{
-				substr = ft_substr(commands[i], start, j - 1 - start);
-				cmds[size].cmd_arg
-			}
 			j++;
 		}
-		cmds[size].cmd_arg = NULL;
-		init_cmds_fds(cmds, size);
+	//	cmds[size].cmd_arg = NULL;
+	//	init_cmds_fds(cmds, size);
 		cmds_split(commands[i], cmds, size);
+		int n = 0;
+		int z = 0;
+		while (cmds[n].cmd_arg)
+		{
+			while (cmds[n].cmd_arg[z])
+			{
+				printf("%s\n", cmds[n].cmd_arg[z]);
+				z++;
+			}
+			printf("***end***\n");
+			n++;
+		}
 		executor(cmds);
 		i++;
 		j = 0;
+		size = 1;
 	}
 	//line = ft_realloc_str(line, ft_strlen(line));
 	free(line);
