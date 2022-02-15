@@ -31,13 +31,12 @@ int			set_env(char *env, char *new_env)
 	if (g_envp[i])
 	{
 		len = ft_strlen(env) + ft_strlen(new_env) + 2;
-		g_envp[i] = ft_realloc(g_envp[i], len);
+		g_envp[i] = ft_realloc(g_envp[i], ft_strlen(g_envp[i]), len);
 		ft_strchr(g_envp[i], '=')[1] = 0;
 		ft_strlcat(g_envp[i], new_env, len);
 		return (0);
 	}
-	g_envp = ft_realloc(g_envp, sizeof(char *) * (i + 2));
-	g_envp[i + 1] = NULL;
+	g_envp = ft_realloc(g_envp, i, sizeof(char *) * (i + 2));
 	tmp = ft_strjoin(env, "=");
 	g_envp[i] = ft_strjoin(tmp, new_env);
 	free(tmp);

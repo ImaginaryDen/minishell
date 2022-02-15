@@ -27,21 +27,21 @@ char	*ft_clean(int error, char **line, char **cache)
 	return (*line);
 }
 
-void	*ft_realloc(void *old, int size)
+void	*ft_realloc(void *old, int old_size, int size)
 {
 	void	*new;
 	int		i;
 
 	new = malloc(size);
+	ft_bzero(new, size);
 	if (!new)
 		return (NULL);
 	i = 0;
-	while (old && i < size && ((char *)old)[i])
+	while (old && i < old_size && i < size)
 	{
 		((char *)new)[i] = ((char *)old)[i];
 		i++;
 	}
-	((char *)new)[i] = '\0';
 	if (old)
 		free(old);
 	return (new);
@@ -65,11 +65,11 @@ char	*ft_read_line(int fd, char **line, char **cache)
 		if (end)
 			break ;
 		len += error;
-		*line = ft_realloc(*line, len);
+		*line = ft_realloc(*line, ft_strlen(*line), len);
 		ft_strlcat(*line, buf, len);
 	}
 	len += end - buf + 1;
-	*line = ft_realloc(*line, len);
+	*line = ft_realloc(*line, ft_strlen(*line), len);
 	ft_strlcat(*line, buf, len);
 	*cache = ft_substr(buf, end - buf + 1, BUFFER_SIZE);
 	return (*line);
@@ -100,6 +100,6 @@ char	*get_next_line(int fd)
 		cache = NULL;
 	}
 	else
-		line = ft_realloc(line, 1);
+		line = ft_realloc(line, 0, 1);
 	return (ft_read_line(fd, &line, &cache));
 }

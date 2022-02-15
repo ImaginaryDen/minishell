@@ -31,10 +31,12 @@ int ft_one_cmd(t_pipe_data *data)
 	else
 	{
 		check_cmd(data);
-		check(data->cmd_arg);
 		pid = fork();
 		if (!pid)
-			execve(data->cmd_arg[0], data->cmd_arg, g_envp);
+			if (!check(data->cmd_arg))
+				execve(data->cmd_arg[0], data->cmd_arg, g_envp);
+			else
+				exit(1);
 		waitpid(pid, NULL, 0);
 		status_child(pid);
 	}
