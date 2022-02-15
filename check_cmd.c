@@ -61,7 +61,7 @@ int	check(char **args)
 			return (0);
 		return (return_error(args[0], ": Permission denied\n", 126));
 	}
-	else if (!ft_strncmp(args[0], "./", 2) || args[0][0] == '/')
+	else if (ft_strchr(args[0], '/') != NULL)
 	{
 		return (return_error(args[0], ": No such file or directory\n", 127));
 	}
