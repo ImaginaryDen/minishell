@@ -7,9 +7,9 @@ HEADER  	=	./includes/minishell.h
 
 OBJ_DIR		=	./objects
 SRC			=	$(shell ls ./*c) $(shell ls myexe/*c)
-OBJ			=	$(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
+OBJ			=	$(addprefix $(OBJ_DIR)/, $(SRC:.c=.o)) /usr/lib/x86_64-linux-gnu/libreadline.so.8
 
-CFLAGS		=	-I$(PATH_HEADER) #-Wall -Wextra -Werror 
+CFLAGS		=   -I$(PATH_HEADER) #-Wall -Wextra -Werror 
 RM			=	rm -rf
 CC			=	gcc
 

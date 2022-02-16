@@ -11,6 +11,8 @@
 # include <fcntl.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
 typedef struct s_info
 {
