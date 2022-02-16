@@ -30,12 +30,17 @@ int main(int argc, char **argv, char **envp)
 	info.status = 1;
 	g_envp = copy_envp(envp);
 	g_status = 0;
+	signal(SIGQUIT, sigint_handler);
+	signal(SIGINT, sigint_handler);
 	while (info.status)
 	{
-		line = readline("minishel$>");
+		line = readline("minishell$>");
 		add_history(line);
 		if (line == NULL)
+		{
+			ft_exit(NULL);
 			break;
+		}
 		parser(line, &info);
 	}
 }

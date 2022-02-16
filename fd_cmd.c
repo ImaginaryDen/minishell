@@ -18,6 +18,7 @@ int ft_one_cmd(t_pipe_data *data)
 	int	save_in;
 	int	save_out;
 	int	save_err;
+	int status;
 
 	save_in = dup(STDIN_FILENO);
 	save_out = dup(STDOUT_FILENO);
@@ -32,13 +33,14 @@ int ft_one_cmd(t_pipe_data *data)
 	{
 		check_cmd(data);
 		pid = fork();
+		g_pid = pid;
 		if (!pid)
 			if (!check(data->cmd_arg))
 				execve(data->cmd_arg[0], data->cmd_arg, g_envp);
 			else
 				exit(1);
-		waitpid(pid, NULL, 0);
-		status_child(pid);
+		waitpid(pid, &status, 0);
+		status_child(status);
 	}
 	dup2(save_in, STDIN_FILENO);
 	dup2(save_out, STDOUT_FILENO);
@@ -87,6 +89,7 @@ void	free_cmd(t_pipe_data *data)
 pid_t	get_fork(t_pipe_data *cmd, pid_t *pid, int i)
 {
 	pid[i] = fork();
+	g_pid = pid[i];
 	if (pid[i] == -1)
 	{
 		perror("fork");
@@ -106,7 +109,7 @@ void	ft_wait_all_pid(pid_t *pid_cmd, int size)
 		if(pid_cmd[i])
 		{
 			waitpid(pid_cmd[i], &status, 0);
-			status_child(pid_cmd[i]);
+			status_child(status);
 		}
 		i++;
 	}

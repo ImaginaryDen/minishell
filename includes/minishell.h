@@ -30,6 +30,7 @@ typedef struct s_pipe_data
 
 char	**g_envp;
 int		g_status;
+int		g_pid;
 
 # define READ_FD 0
 # define WRITE_FD 1
@@ -59,5 +60,7 @@ int		set_env(char *env, char *new_env);
 void	ft_export(char **args);
 int		unset_env(char *env);
 void	ft_unset(char **args);
+void	sigint_handler(int sign_num);
+
 
 #endif
