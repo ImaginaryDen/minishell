@@ -32,8 +32,8 @@ int main(int argc, char **argv, char **envp)
 	g_status = 0;
 	while (info.status)
 	{
-		ft_putstr_fd("$>", 1);
-		line = get_next_line(1);
+		line = readline("minishel$>");
+		add_history(line);
 		if (line == NULL)
 			break;
 		parser(line, &info);
