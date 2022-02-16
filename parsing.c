@@ -2,6 +2,8 @@
 
 // $0 - обрабатывать?
 // $? - нужно обработать с возвращаемым значением от предыдущей команды (напрячь Дениса)
+// в переменной окружения тоже надо разделять аргументы пробельными символами, а не оставлять как есть
+// добавить обработку ${}
 
 char	*ft_realloc_str(char *old, int size)
 {
@@ -222,10 +224,58 @@ int	ft_size_arr(char **arr)
 	return (i);
 }
 
-int	ft_isspace(char ch)
+int	ft_isspace_ispipe(char ch)
 {
-	if ((ch >= 9 && ch <= 13) || ch == 32)
+	if ((ch >= 9 && ch <= 13) || ch == 32 || ch == '|')
 		return (1);
+	return (0);
+}
+
+int	ft_isredirect(char ch1, char ch2)
+{
+	if (ch1 == '>' && ch2 == '>')
+		return (3);
+	else if (ch1 == '>')
+		return (1);
+	else if (ch1 == '<' && ch2 == '<')
+		return (4);
+	else if (ch1 == '<')
+		return (2);
+	return (0);
+}
+
+int	redirect(t_pipe_data *cmds, int *j, char *line)
+{
+	int	type;
+	int start;
+	char	*filename;
+	int	fd;
+
+	type = ft_isredirect(line[*j], line[*j + 1]);
+	(*j)++;
+	if (type == 3 || type == 4)
+		(*j)++;
+	while (ft_isspace_ispipe(line[*j]))		// тут только isspace, исправить
+		(*j)++;
+	start = *j;
+	while (line[*j] && !ft_isspace_ispipe(line[*j]))		// тут только isspace, исправить
+		(*j)++;
+	filename = ft_substr(line, start, *j - start);
+	if (type == 1)
+		fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (type == 3)
+		fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	if (type == 2)
+		fd = open(filename, O_RDONLY, 0644);
+	if (type == 4)
+		fd = 0;
+	free(filename);
+	if (fd == -1)
+		return (1);
+	if (type == 1 || type == 3)
+		cmds->fd_in_out[1] = fd;
+	else
+		cmds->fd_in_out[0] = fd;
 	return (0);
 }
 
@@ -263,16 +313,29 @@ t_pipe_data *parser(char *line, t_info *info)
 		size = 1;
 		while (commands[i][j])
 		{
-			if ((commands[i][j] == '|' || ft_isspace(commands[i][j])) && ((j - start) > 0))
+			if (ft_isspace_ispipe(commands[i][j]) || ft_isredirect(commands[i][j], commands[i][j + 1]) || commands[i][j + 1] == '\0')
 			{
-				len = ft_size_arr(cmds[size - 1].cmd_arg);
-				cmds[size - 1].cmd_arg = ft_realloc(cmds[size - 1].cmd_arg, sizeof(char *) * len, sizeof(char *) * (len + 2));
-				cmds[size - 1].cmd_arg[len] = ft_substr(commands[i], start, j - start);
+				if ((j - start) > 0)
+				{
+					len = ft_size_arr(cmds[size - 1].cmd_arg);
+					cmds[size - 1].cmd_arg = ft_realloc(cmds[size - 1].cmd_arg, sizeof(char *) * len, sizeof(char *) * (len + 2));
+					cmds[size - 1].cmd_arg[len] = ft_substr(commands[i], start, j - start);
+					start = j + 1;
+				}
+				else
+					start++;
 			//	printf("STR: %s\n", cmds[size - 1].cmd_arg[len]);
-				start = j + 1;
+				if (ft_isredirect(commands[i][j], commands[i][j + 1]))
+				{
+					if (redirect(&(cmds[size - 1]), &j, commands[i]) == 1)
+					{
+						perror("Error: ");
+						// надо как-то выйти...
+					}
+					start = j;
+					continue ;
+				}
 			}
-			else if ((commands[i][j] == '|' || ft_isspace(commands[i][j])) && ((j - start) == 0))
-				start++;
 			if ((commands[i][j] == '\'') || (commands[i][j] == '\"'))
 				commands[i] = quotation(commands[i], &j, g_envp);
 			else if (commands[i][j] == '\\')
