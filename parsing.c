@@ -315,12 +315,16 @@ t_pipe_data *parser(char *line, t_info *info)
 		{
 			if (ft_isspace_ispipe(commands[i][j]) || ft_isredirect(commands[i][j], commands[i][j + 1]) || commands[i][j + 1] == '\0')
 			{
+				if (commands[i][j + 1] == '\0')
+					j++;
 				if ((j - start) > 0)
 				{
 					len = ft_size_arr(cmds[size - 1].cmd_arg);
 					cmds[size - 1].cmd_arg = ft_realloc(cmds[size - 1].cmd_arg, sizeof(char *) * len, sizeof(char *) * (len + 2));
 					cmds[size - 1].cmd_arg[len] = ft_substr(commands[i], start, j - start);
 					start = j + 1;
+					if (commands[i][j] == '\0')
+						continue ;
 				}
 				else
 					start++;
