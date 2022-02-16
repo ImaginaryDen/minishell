@@ -61,6 +61,7 @@ void	ft_export(char **args);
 int		unset_env(char *env);
 void	ft_unset(char **args);
 void	sigint_handler(int sign_num);
-
+int		here_doc(char *limit);
+void	sigint_heredoc(int sign_num);
 
 #endif

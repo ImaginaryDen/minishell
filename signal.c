@@ -25,7 +25,7 @@ static void	process(int sign_num)
 }
 
 void		sigint_handler(int sign_num)
-{
+{	
 	if ((sign_num == SIGINT || sign_num == SIGQUIT) && g_pid != 0)
 		process(sign_num);
 	else
@@ -41,4 +41,15 @@ void		sigint_handler(int sign_num)
 		else if (sign_num == SIGQUIT)
 			ft_putstr_fd("\b\b  \b\b", 1);
 	}
+}
+
+void		sigint_heredoc(int sign_num)
+{	
+	if (sign_num == SIGINT)
+	{
+		g_status = 1;
+		exit(2);
+	}
+	else if (sign_num == SIGQUIT)
+		ft_putstr_fd("\b\b  \b\b", 1);
 }

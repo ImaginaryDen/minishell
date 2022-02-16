@@ -268,7 +268,7 @@ int	redirect(t_pipe_data *cmds, int *j, char *line)
 	if (type == 2)
 		fd = open(filename, O_RDONLY, 0644);
 	if (type == 4)
-		fd = 0;
+		fd = here_doc(filename);
 	free(filename);
 	if (fd == -1)
 		return (1);
