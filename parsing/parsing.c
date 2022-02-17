@@ -59,7 +59,7 @@ char	**preparser(char **line)
 	i++;
 	while (i < len)
 	{
-		if ((*line)[i] == ';' && (*line)[i] == ';')
+		if ((*line)[i] == ';' && (*line)[i - 1] == ';')
 			return (NULL);
 		i++;
 	}
@@ -80,6 +80,7 @@ char	**preparser(char **line)
 				count_qoutes++;
 			if (commands_line[i][j] == '\"')
 				count_double_qoutes++;
+			j++;
 		}
 		if (count_qoutes % 2 == 1 || count_double_qoutes % 2 == 1)
 			return (NULL);
@@ -182,14 +183,14 @@ t_pipe_data *parser(char *line, t_info *info)
 	char	*substr;
 	int save;
 
-//	commands_line = preparser(&line);
-//	if (!commands_line)
-//	{
-//		printf("ERROR\n");
-//		return (NULL);
-//	}
+	commands_line = preparser(&line);
+	if (!commands_line)
+	{
+		printf("ERROR\n");
+		return (NULL);
+	}
 	i = 0;
-	commands_line = ft_split(line, ';');
+//	commands_line = ft_split(line, ';');
 	while (commands_line[i])
 	{
 		size = ft_define_size(commands_line[i]);
@@ -226,7 +227,13 @@ t_pipe_data *parser(char *line, t_info *info)
 				start = j + 1;
 			}
 			else if (commands_line[i][j] == '|')
+			{
+				if (split_cmd(commands_line[i], &j, &start, &(cmds[size - 1])) == 1)
+					continue ;
+				j++;
 				size++;
+				continue ;
+			}
 			if (split_cmd(commands_line[i], &j, &start, &(cmds[size - 1])) == 1)
 				continue ;
 			j++;
