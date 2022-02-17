@@ -162,7 +162,7 @@ t_pipe_data *parser(char *line, t_info *info)
 		{
 			if (ft_isspace_ispipe(commands_line[i][j]) || commands_line[i][j + 1] == '\0')
 			{
-				if (commands_line[i][j + 1] == '\0')
+				if (!ft_isspace_ispipe(commands_line[i][j]) && commands_line[i][j + 1] == '\0')
 					j++;
 				if ((j - start) > 0)
 				{
