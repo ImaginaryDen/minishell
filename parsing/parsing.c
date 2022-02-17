@@ -5,6 +5,42 @@
 // 2> 1>
 // добавить обработку ${}
 
+// Проблемы:
+// $321
+// echo "hello><; world"
+// echo """"""""""              :""
+// echo """""""""",         wtf     :""
+// export = ; echo $? 						// Денису
+// echo $?
+// export str1 2str = _3str str4=str5 
+//  'e'"x"p'o'r't'							// Денису (хз)
+// echo "hello;"; $q'c'"h"o $test
+// cd -; pwd								// Денису (хз)
+//  echo         \'\"\\
+// echo ~
+// 1) >fil$q'1' e$w"ho" s$i"r"ing f$r$u file1
+// 2) pwd ; cat file1
+// ls; unset PATH; ls     ;					// Денису!
+// pwd; echo $PWD
+// ~ брать не из env!
+// cd; echo $PWD; cd -
+// ls "-la" ; cd -
+// echo \'\"\\ "\hello\$PWD"
+// echo "\""
+// echo "\'"
+// >"helo l" echo hell\ f
+// >>"helo l" echo hell\ f ; echo hell\ f
+// echo -$t "-n" '-''n' '-n;'         -n hello
+// export a=l d=s; $a$d
+// echo $PWD > as ; cat as					// Денису?
+// echo ''\''"a|"\'q'a'\a'w'
+// echo \"\|\;\"\| cat -e > \q\w\e\r\t\y ; cat qwerty
+// pwd >a1>a2>a3; echo s1 >q1 s2>q2 s3; cat a2; cat a3; cat q1; cat q2; 
+// echo hello '\' ';' "   '\' \" " \" "$PWD\\\"\~\;"\; >> t1 \' \ \ \\
+// echo hello '\' ';' "   '\' \" " \" "$PWD\\\"\~\;"\; >> t1 \' \ \ \\; cat t1
+// \ls\ ;
+// export a1=a2 ; export a2=' a3' ; export a1=hello$a2=poka
+
 void	line_shift(char *line, int i, int shift)
 {
 	while (line[i + shift - 1])
@@ -50,8 +86,8 @@ char	**preparser(char **line)
 	*line = ft_strtrim(*line, isspace);
 	free(tmp);
 	len = ft_strlen(*line);
-	if (!len)
-		return (NULL);
+//	if (!len)
+//		return (NULL);
 	if (len > 1 && (*line)[len - 1] == '\\' && (*line)[len - 2] != '\\')
 		return (NULL);
 	if ((*line)[i] == ';' || (*line)[i] == '|')
