@@ -29,6 +29,7 @@ typedef struct s_pipe_data
 }	t_pipe_data;
 
 char	**g_envp;
+char	**g_history;
 int		g_status;
 int		g_pid;
 
@@ -63,5 +64,7 @@ void	ft_unset(char **args);
 void	sigint_handler(int sign_num);
 int		here_doc(char *limit);
 void	sigint_heredoc(int sign_num);
+void	ft_history(char **args);
+void ft_add_history(char *str);
 
 #endif

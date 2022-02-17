@@ -35,7 +35,7 @@ int main(int argc, char **argv, char **envp)
 	while (info.status)
 	{
 		line = readline("minishell$>");
-		add_history(line);
+		ft_add_history(line);
 		if (line == NULL)
 		{
 			ft_exit(NULL);
