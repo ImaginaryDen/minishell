@@ -129,6 +129,29 @@ int	ft_isspace_ispipe(char ch)
 	return (0);
 }
 
+int split_cmd(char *line, int *j, int *start, t_pipe_data *cmd)
+{
+	int	len;
+
+	if (ft_isspace_ispipe(line[*j]) || line[*j + 1] == '\0')
+	{
+		if (!ft_isspace_ispipe(line[*j]) && line[*j + 1] == '\0')
+			(*j)++;
+		if ((*j) - *start > 0)
+		{
+			len = ft_size_arr(cmd->cmd_arg);
+			cmd->cmd_arg = ft_realloc(cmd->cmd_arg, sizeof(char *) * len, sizeof(char *) * (len + 2));
+			cmd->cmd_arg[len] = ft_substr(line, *start, *j - *start);
+			*start = *j + 1;
+			if (line[*j] == '\0')
+				return (1) ;
+		}
+		else
+			(*start)++;
+	}
+	return (0);
+}
+
 t_pipe_data *parser(char *line, t_info *info)
 {
 	int		i;
@@ -140,7 +163,7 @@ t_pipe_data *parser(char *line, t_info *info)
 	int		start;
 	int		end;
 	char	*substr;
-	int		len;
+	int save;
 
 	if (preparser(line) == -1)
 	{
@@ -160,28 +183,21 @@ t_pipe_data *parser(char *line, t_info *info)
 		size = 1;
 		while (commands_line[i][j])
 		{
-			if (ft_isspace_ispipe(commands_line[i][j]) || commands_line[i][j + 1] == '\0')
-			{
-				if (!ft_isspace_ispipe(commands_line[i][j]) && commands_line[i][j + 1] == '\0')
-					j++;
-				if ((j - start) > 0)
-				{
-					len = ft_size_arr(cmds[size - 1].cmd_arg);
-					cmds[size - 1].cmd_arg = ft_realloc(cmds[size - 1].cmd_arg, sizeof(char *) * len, sizeof(char *) * (len + 2));
-					cmds[size - 1].cmd_arg[len] = ft_substr(commands_line[i], start, j - start);
-					start = j + 1;
-					if (commands_line[i][j] == '\0')
-						continue ;
-				}
-				else
-					start++;
-			}
 			if ((commands_line[i][j] == '\'') || (commands_line[i][j] == '\"'))
 				commands_line[i] = quotation(commands_line[i], &j, g_envp);
 			else if (commands_line[i][j] == '\\')
 				slash(commands_line[i], j);
 			else if (commands_line[i][j] == '$')
+			{
+				save = j;
 				commands_line[i] = env_var(commands_line[i], &j, g_envp);
+				while (save <= j)
+				{
+					if (split_cmd(commands_line[i], &save, &start, &(cmds[size - 1])) == 1)
+						continue ;
+					save++;
+				}
+			}
 			else if (ft_isredirect(commands_line[i][j], commands_line[i][j + 1]))
 			{
 				if (redirect(&(cmds[size - 1]), &j, commands_line[i]) == 1)
@@ -192,6 +208,8 @@ t_pipe_data *parser(char *line, t_info *info)
 			}
 			else if (commands_line[i][j] == '|')
 				size++;
+			if (split_cmd(commands_line[i], &j, &start, &(cmds[size - 1])) == 1)
+				continue ;
 			j++;
 		}
 		cmds_fds(commands_line[i], cmds, size);
