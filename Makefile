@@ -6,7 +6,7 @@ PATH_LIB 	=	./libft_gnl/
 HEADER  	=	./includes/minishell.h 
 
 OBJ_DIR		=	./objects
-SRC			=	$(shell ls ./*c) $(shell ls myexe/*c)
+SRC			=	$(shell ls ./*c) $(shell ls myexe/*c) $(shell ls parsing/*c)
 OBJ			=	$(addprefix $(OBJ_DIR)/, $(SRC:.c=.o)) /usr/lib/x86_64-linux-gnu/libreadline.so.8
 
 CFLAGS		=   -I$(PATH_HEADER) #-Wall -Wextra -Werror 
