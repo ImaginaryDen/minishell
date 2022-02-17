@@ -2,7 +2,7 @@
 
 // $0 - обрабатывать?
 // $? - нужно обработать с возвращаемым значением от предыдущей команды (напрячь Дениса)
-// в переменной окружения тоже надо разделять аргументы пробельными символами, а не оставлять как есть
+// 2> 1>
 // добавить обработку ${}
 
 void	line_shift(char *line, int i, int shift)
@@ -31,47 +31,64 @@ int skip_isspace_reverse(char *line, int *i)
 		(*i)--;
 }
 
-int	preparser(char *line)
+char	**preparser(char **line)
 {
 	int	i;
 	int count_qoutes;
 	int count_double_qoutes;
 	int len;
+	char *tmp;
+	const char	isspace[7] = {9, 10, 11, 12, 13, 32, 0};
+	char	**commands_line;
+	int j;
 
 	i = 0;
+	
 	count_qoutes = 0;
 	count_double_qoutes = 0;
-	skip_isspace(line, &i);
-	line += i;
-	i = 0;
-	len = ft_strlen(line);
-	while ((len - 1 > 0) && ((line[len - 1] >= 9 && line[len - 1] <= 13) || line[len - 1] == 32))
-		len--;
-	if (len <= 0)
-		return (-1);
-	if (len == 1 && line[len - 1] == '\\')
-		return (-1);
-	if (line[len - 1] == '\\' && line[len - 2] != '\\')
-		return (-1);
-	if (line[0] == ';' || line[0] == '|')
-		return (-1);
+	tmp = *line;
+	*line = ft_strtrim(*line, isspace);
+	free(tmp);
+	len = ft_strlen(*line);
+	if (!len)
+		return (NULL);
+	if (len > 1 && (*line)[len - 1] == '\\' && (*line)[len - 2] != '\\')
+		return (NULL);
+	if ((*line)[i] == ';' || (*line)[i] == '|')
+		return (NULL);
+	i++;
 	while (i < len)
 	{
-		if (i != 0)
-		{
-			if (line[i] == ';' && (line[i - 1] == ';' || line[i - 1] == '|'))
-				return (-1);
-			
-		}
-		if (line[i] == '\'')
-			count_qoutes++;
-		if (line[i] == '\"')
-			count_double_qoutes++;
+		if ((*line)[i] == ';' && (*line)[i] == ';')
+			return (NULL);
 		i++;
 	}
-	if (count_qoutes % 2 == 1 || count_double_qoutes % 2 == 1)
-		return (-1);
-	return (0);
+	i = 0;
+	commands_line = ft_split(*line, ';');
+	while (commands_line[i])
+	{
+		tmp = commands_line[i];
+		commands_line[i] = ft_strtrim(commands_line[i], isspace);
+		free(tmp);
+		len = ft_strlen(commands_line[i]);
+		if (commands_line[i][0] == '\0' || commands_line[i][0] == '|' || commands_line[i][len - 1] == '|')
+			return (NULL);
+		j = 0;
+		while (commands_line[i][j])
+		{
+			if (commands_line[i][j] == '\'')
+				count_qoutes++;
+			if (commands_line[i][j] == '\"')
+				count_double_qoutes++;
+		}
+		if (count_qoutes % 2 == 1 || count_double_qoutes % 2 == 1)
+			return (NULL);
+		j = 0;
+		count_qoutes = 0;
+		count_double_qoutes = 0;
+		i++;
+	}
+	return (commands_line);
 }
 
 void	define_fds(t_pipe_data *cmds)
@@ -165,13 +182,14 @@ t_pipe_data *parser(char *line, t_info *info)
 	char	*substr;
 	int save;
 
-	if (preparser(line) == -1)
-	{
-		printf("ERROR\n");
-		return (NULL);
-	}
-	commands_line = ft_split(line, ';');
+//	commands_line = preparser(&line);
+//	if (!commands_line)
+//	{
+//		printf("ERROR\n");
+//		return (NULL);
+//	}
 	i = 0;
+	commands_line = ft_split(line, ';');
 	while (commands_line[i])
 	{
 		size = ft_define_size(commands_line[i]);
@@ -205,6 +223,7 @@ t_pipe_data *parser(char *line, t_info *info)
 					perror("Error: ");
 					break ;
 				}
+				start = j + 1;
 			}
 			else if (commands_line[i][j] == '|')
 				size++;
