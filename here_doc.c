@@ -7,7 +7,6 @@ void	here_doc_gnl(int *end, char *limit)
 
 	close(end[READ_FD]);
 
-	puts("heredoc");
 	signal(SIGINT, sigint_heredoc);
 	signal(SIGQUIT, sigint_heredoc);
 	ft_putchar_fd('>', 1);
