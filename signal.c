@@ -11,9 +11,6 @@ static void	process(int sign_num)
 		else if (sign_num == SIGINT)
 		{
 			ft_putstr_fd("\n", 1);
-			rl_on_new_line();
-			rl_replace_line("", 1);
-			rl_redisplay();
 			g_status = 130;
 		}
 	}
