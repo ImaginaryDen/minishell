@@ -66,5 +66,14 @@ int		here_doc(char *limit);
 void	sigint_heredoc(int sign_num);
 void	ft_history(char **args);
 void ft_add_history(char *str);
+char	*env_var(char *line, int *i, char **env);
+char	*quotation(char *line, int *i, char **env);
+int	redirect(t_pipe_data *cmds, int *j, char *line);
+void	ft_free_array(char **array);
+int	ft_size_arr(char **arr);
+void	slash(char *line, int i);
+void	line_shift(char *line, int i, int shift);
+int	ft_isspace_ispipe(char ch);
+int	ft_isredirect(char ch1, char ch2);
 
 #endif
