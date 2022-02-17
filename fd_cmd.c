@@ -38,7 +38,7 @@ int ft_one_cmd(t_pipe_data *data)
 			if (!check(data->cmd_arg))
 				execve(data->cmd_arg[0], data->cmd_arg, g_envp);
 			else
-				exit(1);
+				exit(g_status);
 		waitpid(pid, &status, 0);
 		status_child(status);
 	}
@@ -55,7 +55,6 @@ int ft_one_cmd(t_pipe_data *data)
 
 int	ft_cmd(t_pipe_data *data)
 {
-	int		ret;
 	int i;
 
 	i = 0;
@@ -68,13 +67,14 @@ int	ft_cmd(t_pipe_data *data)
 	dup2(data->fd_in_out[READ_FD], STDIN_FILENO);
 	dup2(data->fd_in_out[WRITE_FD], STDOUT_FILENO);
 	dup2(data->fd_in_out[ERR_FD], STDERR_FILENO);
-	ret = 0;
 	errno = 0;
 	if (exev_include(data))
-		exit(ret);	
+		exit(g_status);	
 	check_cmd(data);
 	if (!check(data->cmd_arg) && data->cmd_arg != NULL)
-		ret = execve(data->cmd_arg[0], data->cmd_arg, g_envp);
+		execve(data->cmd_arg[0], data->cmd_arg, g_envp);
+	else
+		exit(g_status);
 }
 
 void	free_cmd(t_pipe_data *data)
