@@ -39,18 +39,25 @@ int ft_one_cmd(t_pipe_data *data)
 				execve(data->cmd_arg[0], data->cmd_arg, g_envp);
 			else
 				exit(g_status);
+		if (!ft_strncmp(data->cmd_arg[0], "./minishell", ft_strlen(data->cmd_arg[0])))
+		{
+			signal(SIGINT, SIG_IGN);
+			signal(SIGQUIT, SIG_IGN);	
+		}
 		waitpid(pid, &status, 0);
+		signal(SIGINT, sigint_handler);
+		signal(SIGQUIT, sigint_handler);
 		status_child(status);
 	}
-	dup2(save_in, STDIN_FILENO);
-	dup2(save_out, STDOUT_FILENO);
-	dup2(save_err, STDERR_FILENO);
 	if (data->fd_in_out[READ_FD] != STDIN_FILENO)
 		close(data->fd_in_out[READ_FD]);
 	if (data->fd_in_out[WRITE_FD] != STDOUT_FILENO)
 		close(data->fd_in_out[WRITE_FD]);
 	if (data->fd_in_out[ERR_FD] != STDERR_FILENO)
 		close(data->fd_in_out[ERR_FD]);
+	dup2(save_in, STDIN_FILENO);
+	dup2(save_out, STDOUT_FILENO);
+	dup2(save_err, STDERR_FILENO);
 }
 
 int	ft_cmd(t_pipe_data *data)
