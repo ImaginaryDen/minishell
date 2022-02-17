@@ -216,5 +216,6 @@ t_pipe_data *parser(char *line, t_info *info)
 		executor(cmds);
 		i++;
 	}
+	ft_free_array(commands_line);
 	return (cmds);
 }
