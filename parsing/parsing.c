@@ -2,8 +2,44 @@
 
 // $0 - обрабатывать?
 // $? - нужно обработать с возвращаемым значением от предыдущей команды (напрячь Дениса)
-// в переменной окружения тоже надо разделять аргументы пробельными символами, а не оставлять как есть
+// 2> 1>
 // добавить обработку ${}
+
+// Проблемы:
+// $321
+// echo "hello><; world"
+// echo """"""""""              :""
+// echo """""""""",         wtf     :""
+// export = ; echo $? 						// Денису
+// echo $?
+// export str1 2str = _3str str4=str5 
+//  'e'"x"p'o'r't'							// Денису (хз)
+// echo "hello;"; $q'c'"h"o $test
+// cd -; pwd								// Денису (хз)
+//  echo         \'\"\\
+// echo ~
+// 1) >fil$q'1' e$w"ho" s$i"r"ing f$r$u file1
+// 2) pwd ; cat file1
+// ls; unset PATH; ls     ;					// Денису!
+// pwd; echo $PWD
+// ~ брать не из env!
+// cd; echo $PWD; cd -
+// ls "-la" ; cd -
+// echo \'\"\\ "\hello\$PWD"
+// echo "\""
+// echo "\'"
+// >"helo l" echo hell\ f
+// >>"helo l" echo hell\ f ; echo hell\ f
+// echo -$t "-n" '-''n' '-n;'         -n hello
+// export a=l d=s; $a$d
+// echo $PWD > as ; cat as					// Денису?
+// echo ''\''"a|"\'q'a'\a'w'
+// echo \"\|\;\"\| cat -e > \q\w\e\r\t\y ; cat qwerty
+// pwd >a1>a2>a3; echo s1 >q1 s2>q2 s3; cat a2; cat a3; cat q1; cat q2; 
+// echo hello '\' ';' "   '\' \" " \" "$PWD\\\"\~\;"\; >> t1 \' \ \ \\
+// echo hello '\' ';' "   '\' \" " \" "$PWD\\\"\~\;"\; >> t1 \' \ \ \\; cat t1
+// \ls\ ;
+// export a1=a2 ; export a2=' a3' ; export a1=hello$a2=poka
 
 void	line_shift(char *line, int i, int shift)
 {
@@ -31,47 +67,65 @@ int skip_isspace_reverse(char *line, int *i)
 		(*i)--;
 }
 
-int	preparser(char *line)
+char	**preparser(char **line)
 {
 	int	i;
 	int count_qoutes;
 	int count_double_qoutes;
 	int len;
+	char *tmp;
+	const char	isspace[7] = {9, 10, 11, 12, 13, 32, 0};
+	char	**commands_line;
+	int j;
 
 	i = 0;
+	
 	count_qoutes = 0;
 	count_double_qoutes = 0;
-	skip_isspace(line, &i);
-	line += i;
-	i = 0;
-	len = ft_strlen(line);
-	while ((len - 1 > 0) && ((line[len - 1] >= 9 && line[len - 1] <= 13) || line[len - 1] == 32))
-		len--;
-	if (len <= 0)
-		return (-1);
-	if (len == 1 && line[len - 1] == '\\')
-		return (-1);
-	if (line[len - 1] == '\\' && line[len - 2] != '\\')
-		return (-1);
-	if (line[0] == ';' || line[0] == '|')
-		return (-1);
+	tmp = *line;
+	*line = ft_strtrim(*line, isspace);
+	free(tmp);
+	len = ft_strlen(*line);
+//	if (!len)
+//		return (NULL);
+	if (len > 1 && (*line)[len - 1] == '\\' && (*line)[len - 2] != '\\')
+		return (NULL);
+	if ((*line)[i] == ';' || (*line)[i] == '|')
+		return (NULL);
+	i++;
 	while (i < len)
 	{
-		if (i != 0)
-		{
-			if (line[i] == ';' && (line[i - 1] == ';' || line[i - 1] == '|'))
-				return (-1);
-			
-		}
-		if (line[i] == '\'')
-			count_qoutes++;
-		if (line[i] == '\"')
-			count_double_qoutes++;
+		if ((*line)[i] == ';' && (*line)[i - 1] == ';')
+			return (NULL);
 		i++;
 	}
-	if (count_qoutes % 2 == 1 || count_double_qoutes % 2 == 1)
-		return (-1);
-	return (0);
+	i = 0;
+	commands_line = ft_split(*line, ';');
+	while (commands_line[i])
+	{
+		tmp = commands_line[i];
+		commands_line[i] = ft_strtrim(commands_line[i], isspace);
+		free(tmp);
+		len = ft_strlen(commands_line[i]);
+		if (commands_line[i][0] == '\0' || commands_line[i][0] == '|' || commands_line[i][len - 1] == '|')
+			return (NULL);
+		j = 0;
+		while (commands_line[i][j])
+		{
+			if (commands_line[i][j] == '\'')
+				count_qoutes++;
+			if (commands_line[i][j] == '\"')
+				count_double_qoutes++;
+			j++;
+		}
+		if (count_qoutes % 2 == 1 || count_double_qoutes % 2 == 1)
+			return (NULL);
+		j = 0;
+		count_qoutes = 0;
+		count_double_qoutes = 0;
+		i++;
+	}
+	return (commands_line);
 }
 
 void	define_fds(t_pipe_data *cmds)
@@ -165,13 +219,14 @@ t_pipe_data *parser(char *line, t_info *info)
 	char	*substr;
 	int save;
 
-	if (preparser(line) == -1)
+	commands_line = preparser(&line);
+	if (!commands_line)
 	{
 		printf("ERROR\n");
 		return (NULL);
 	}
-	commands_line = ft_split(line, ';');
 	i = 0;
+//	commands_line = ft_split(line, ';');
 	while (commands_line[i])
 	{
 		size = ft_define_size(commands_line[i]);
@@ -205,9 +260,16 @@ t_pipe_data *parser(char *line, t_info *info)
 					perror("Error: ");
 					break ;
 				}
+				start = j + 1;
 			}
 			else if (commands_line[i][j] == '|')
+			{
+				if (split_cmd(commands_line[i], &j, &start, &(cmds[size - 1])) == 1)
+					continue ;
+				j++;
 				size++;
+				continue ;
+			}
 			if (split_cmd(commands_line[i], &j, &start, &(cmds[size - 1])) == 1)
 				continue ;
 			j++;
