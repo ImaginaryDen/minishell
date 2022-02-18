@@ -38,6 +38,13 @@ void	ft_export(char **args)
 	while (args[i])
 	{
 		end_name = ft_strchr(args[i], '=');
+		if (end_name == args[i])
+		{
+			g_status = 1;
+			ft_putstr_fd("sintax error '='\n", 2);
+			i++;
+			continue;
+		}
 		if (end_name == NULL)
 			return ;
 		name = ft_calloc(sizeof(char), (end_name - args[i] + 1));
@@ -51,6 +58,6 @@ void	ft_export(char **args)
 		free(name);
 		i++;
 	}
-	if (i = 1)
+	if (i == 1)
 		show_export();
 }
