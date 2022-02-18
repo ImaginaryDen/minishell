@@ -16,7 +16,7 @@ char	*get_env(char *name)
 	return (NULL);
 }
 
-void	env_sort()
+void	env_sort(char ** env)
 {
 	char	*tmp;
 	int		i;
@@ -24,16 +24,16 @@ void	env_sort()
 
 	tmp = NULL;
 	i = 0;
-	while (g_envp[i])
+	while (env[i])
 	{
 		j = i + 1;
-		while (g_envp[j])
+		while (env[j])
 		{
-			if(ft_strncmp(g_envp[i], g_envp[j], ft_strlen(g_envp[i])) > 0)
+			if(ft_strncmp(env[i], env[j], ft_strlen(env[i])) > 0)
 			{
-				tmp = g_envp[i];
-				g_envp[i] = g_envp[j];
-				g_envp[j] = tmp;
+				tmp = env[i];
+				env[i] = env[j];
+				env[j] = tmp;
 			}
 			j++;
 		}
