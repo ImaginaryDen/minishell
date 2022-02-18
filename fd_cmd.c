@@ -14,27 +14,20 @@ void		status_child(int pid)
 
 int ft_one_cmd(t_pipe_data *data)
 {
-	int pid;
-	int	save_in;
-	int	save_out;
-	int	save_err;
+	int	save[3];
 	int status;
 
-	save_in = dup(STDIN_FILENO);
-	save_out = dup(STDOUT_FILENO);
-	save_err = dup(STDERR_FILENO);
-
+	save[READ_FD] = dup(STDIN_FILENO);
+	save[WRITE_FD] = dup(STDOUT_FILENO);
+	save[ERR_FD] = dup(STDERR_FILENO);
 	dup2(data->fd_in_out[READ_FD], STDIN_FILENO);
 	dup2(data->fd_in_out[WRITE_FD], STDOUT_FILENO);
 	dup2(data->fd_in_out[ERR_FD], STDERR_FILENO);
-	if (exev_include(data))
-		return (0);
-	else
+	if (!exev_include(data))
 	{
 		check_cmd(data);
-		pid = fork();
-		g_pid = pid;
-		if (!pid)
+		g_pid = fork();
+		if (!g_pid)
 			if (!check(data->cmd_arg))
 				execve(data->cmd_arg[0], data->cmd_arg, g_envp);
 			else
@@ -44,20 +37,18 @@ int ft_one_cmd(t_pipe_data *data)
 			signal(SIGINT, SIG_IGN);
 			signal(SIGQUIT, SIG_IGN);	
 		}
-		waitpid(pid, &status, 0);
+		waitpid(g_pid, &status, 0);
+		g_pid = 0;
 		signal(SIGINT, sigint_handler);
 		signal(SIGQUIT, sigint_handler);
 		status_child(status);
 	}
-	if (data->fd_in_out[READ_FD] != STDIN_FILENO)
-		close(data->fd_in_out[READ_FD]);
-	if (data->fd_in_out[WRITE_FD] != STDOUT_FILENO)
-		close(data->fd_in_out[WRITE_FD]);
-	if (data->fd_in_out[ERR_FD] != STDERR_FILENO)
-		close(data->fd_in_out[ERR_FD]);
-	dup2(save_in, STDIN_FILENO);
-	dup2(save_out, STDOUT_FILENO);
-	dup2(save_err, STDERR_FILENO);
+	close(data->fd_in_out[READ_FD]);
+	close(data->fd_in_out[WRITE_FD]);
+	close(data->fd_in_out[ERR_FD]);
+	dup2(save[READ_FD], STDIN_FILENO);
+	dup2(save[WRITE_FD], STDOUT_FILENO);
+	dup2(save[ERR_FD], STDERR_FILENO);
 }
 
 int	ft_cmd(t_pipe_data *data)
@@ -75,13 +66,13 @@ int	ft_cmd(t_pipe_data *data)
 	dup2(data->fd_in_out[WRITE_FD], STDOUT_FILENO);
 	dup2(data->fd_in_out[ERR_FD], STDERR_FILENO);
 	errno = 0;
-	if (exev_include(data))
-		exit(g_status);	
-	check_cmd(data);
-	if (!check(data->cmd_arg) && data->cmd_arg != NULL)
-		execve(data->cmd_arg[0], data->cmd_arg, g_envp);
-	else
-		exit(g_status);
+	if (!exev_include(data))
+	{
+		check_cmd(data);
+		if (!check(data->cmd_arg) && data->cmd_arg != NULL)
+			execve(data->cmd_arg[0], data->cmd_arg, g_envp);
+	}
+	exit(g_status);
 }
 
 void	free_cmd(t_pipe_data *data)
