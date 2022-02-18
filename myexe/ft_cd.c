@@ -60,11 +60,15 @@ void ft_cd(char **args)
 
 	path = NULL;
 	g_status = 0;
+	if (args[1] && args[2])
+	{
+		ft_putstr_fd("too many arguments\n", STDERR_FILENO);
+	}
 	if (args[1] && !ft_strncmp(args[1], "-", 2))
 	{
 		path = get_env("OLDPWD");
 		if (!path)
-			printf("Error OLDPWD\n");
+			ft_putstr_fd("Error OLDPWD\n", STDERR_FILENO);
 		else
 		{
 			set_directory(ft_strchr(path, '=') + 1);
