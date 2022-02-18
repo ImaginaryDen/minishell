@@ -28,7 +28,7 @@ void check_cmd(t_pipe_data *data)
 	char	**paths;
 	char	*path_cmd;
 
-	if (!ft_strncmp(data->cmd_arg[0], "./", 2) || data->cmd_arg[0][0] == '/')
+	if (!ft_strncmp(data->cmd_arg[0], "./", 2) || data->cmd_arg[0][0] == '/' || get_env("PATH") == NULL)
 		return ;
 	paths = ft_get_paths(g_envp);
 	i = 0;
