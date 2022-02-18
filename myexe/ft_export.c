@@ -1,5 +1,32 @@
 #include "minishell.h"
 
+void show_export()
+{
+	char	**copy_env;
+	int		i;
+	int		size;
+	int		tmp;
+
+	size = ft_size_arr(g_envp);
+	copy_env = ft_calloc(size + 1, sizeof(char *));
+	i = 0;
+	while (i < size)
+	{
+		copy_env[i] = g_envp[i];
+		i++;
+	}
+	env_sort(copy_env);
+	i = 0;
+	while(i < size)
+	{
+		tmp = ft_strchr(copy_env[i], '=') - copy_env[i];
+		if (copy_env[i][0] != '_')
+			printf("declare -x %.*s=\"%s\"\n", tmp, copy_env[i], copy_env[i] + tmp + 1);
+		i++;
+	}
+	free(copy_env);
+}
+
 void	ft_export(char **args)
 {
 	int		i;
@@ -24,4 +51,6 @@ void	ft_export(char **args)
 		free(name);
 		i++;
 	}
+	if (i = 1)
+		show_export();
 }
