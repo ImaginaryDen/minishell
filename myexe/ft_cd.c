@@ -56,19 +56,31 @@ int			set_directory(char *path)
 
 void ft_cd(char **args)
 {
-	char	*home;
+	char	*path;
 
-	home = NULL;
+	path = NULL;
 	g_status = 0;
+	if (args[1] && !ft_strncmp(args[1], "-", 2))
+	{
+		path = get_env("OLDPWD");
+		if (!path)
+			printf("Error OLDPWD\n");
+		else
+		{
+			set_directory(ft_strchr(path, '=') + 1);
+			printf("%s\n", ft_strchr(get_env("PWD"), '=') + 1);
+		}
+		return ;
+	}
 	if (!args[1] || !ft_strncmp(args[1], "~", 1) || !ft_strncmp(args[1], "--", 3))
 	{
-		if (!(home = get_env("HOME")))
+		if (!(path = get_env("HOME")))
 		{
 			ft_putstr_fd("minishell: cd: HOME not set\n", 2);
 			g_status = 1;
 			return ;
 		}
-		set_directory(ft_strchr(home, '=') + 1);
+		set_directory(ft_strchr(path, '=') + 1);
 		return ;
 	}
 	args[1] = add_home_path(args[1]);
