@@ -33,11 +33,16 @@ char	*prompt()
 	if (tmp)
 	{
 		tmp = ft_strchr(tmp, '=') + 1;
-		if (tmp && ft_strnstr(path, tmp, ft_strlen(path)) == path)
+		if (!ft_strncmp(tmp, path, ft_strlen(path) + 1))
+		{
+			free(path);
+			path = ft_strdup("~");
+		}
+		else if (tmp && ft_strnstr(path, tmp, ft_strlen(path)) == path)
 		{
 			line_shift(path, 2, ft_strlen(tmp) - 1);
 			path[0] = '~';
-			path[1] = '/';
+			 path[1] = '/';
 		}
 	}
 	str = ft_add_str(str, path);
