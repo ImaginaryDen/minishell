@@ -7,20 +7,15 @@
 
 // Проблемы:
 // $321
-// echo "hello><; world"
 // echo """"""""""              :""
 // echo """""""""",         wtf     :""
-// export = ; echo $? 						// Денису
 // echo $?
 // export str1 2str = _3str str4=str5 
-//  'e'"x"p'o'r't'							// Денису (хз)
 // echo "hello;"; $q'c'"h"o $test
-// cd -; pwd								// Денису (хз)
 //  echo         \'\"\\
 // echo ~
 // 1) >fil$q'1' e$w"ho" s$i"r"ing f$r$u file1
 // 2) pwd ; cat file1
-// ls; unset PATH; ls     ;					// Денису!
 // pwd; echo $PWD
 // ~ брать не из env!
 // cd; echo $PWD; cd -
@@ -32,7 +27,6 @@
 // >>"helo l" echo hell\ f ; echo hell\ f
 // echo -$t "-n" '-''n' '-n;'         -n hello
 // export a=l d=s; $a$d
-// echo $PWD > as ; cat as					// Денису?
 // echo ''\''"a|"\'q'a'\a'w'
 // echo \"\|\;\"\| cat -e > \q\w\e\r\t\y ; cat qwerty
 // pwd >a1>a2>a3; echo s1 >q1 s2>q2 s3; cat a2; cat a3; cat q1; cat q2; 
@@ -65,6 +59,19 @@ int skip_isspace_reverse(char *line, int *i)
 {
 	while ((i != 0) && ((line[*i] >= 9 && line[*i] <= 13) || line[*i] == 32))
 		(*i)--;
+}
+
+int	skip_quotations(char *line, int *i)
+{
+	char	quote_type;
+	quote_type = line[*i];
+	(*i)++;
+	while (line[*i] && line[*i] != quote_type)
+		(*i)++;
+	if (!line[*i])
+		return (1);
+	(*i)++;
+	return (0);
 }
 
 char	**preparser(char **line)
@@ -100,29 +107,33 @@ char	**preparser(char **line)
 		i++;
 	}
 	i = 0;
-	commands_line = ft_split(*line, ';');
-	while (commands_line[i])
+	j = 1;
+	int start = 0;
+	commands_line = ft_calloc(j, sizeof(char *));
+	while ((*line)[i])
 	{
-		tmp = commands_line[i];
-		commands_line[i] = ft_strtrim(commands_line[i], isspace);
-		free(tmp);
-		len = ft_strlen(commands_line[i]);
-		if (commands_line[i][0] == '\0' || commands_line[i][0] == '|' || commands_line[i][len - 1] == '|')
-			return (NULL);
-		j = 0;
-		while (commands_line[i][j])
+		if ((*line)[i] == '\'' || (*line)[i] == '\"')
 		{
-			if (commands_line[i][j] == '\'')
-				count_qoutes++;
-			if (commands_line[i][j] == '\"')
-				count_double_qoutes++;
+			if (skip_quotations(*line, &i) == 1)
+				return (NULL);
+		}
+		if (((*line)[i] == ';') || ((*line)[i + 1] == '\0'))
+		{
+			if (((*line)[i] != ';') && ((*line)[i + 1] == '\0'))
+				i++;
+			commands_line = ft_realloc(commands_line, sizeof(char *) * j, sizeof(char *) * (j + 1));
+			commands_line[j - 1] = ft_substr(*line, start, i - start);
+			tmp = commands_line[j - 1];
+			commands_line[j - 1] = ft_strtrim(commands_line[j - 1], isspace);
+			free(tmp);
+			len = ft_strlen(commands_line[j - 1]);
+			if (commands_line[j - 1][0] == '\0' || commands_line[j - 1][0] == '|' || commands_line[j - 1][len - 1] == '|')
+				return (NULL);
+			start = i + 1;
+			if ((*line)[i] == '\0')
+				i--;
 			j++;
 		}
-		if (count_qoutes % 2 == 1 || count_double_qoutes % 2 == 1)
-			return (NULL);
-		j = 0;
-		count_qoutes = 0;
-		count_double_qoutes = 0;
 		i++;
 	}
 	return (commands_line);
