@@ -76,5 +76,6 @@ void		line_shift(char *line, int i, int shift);
 int			ft_isspace_ispipe(char ch);
 int			ft_isredirect(char ch1, char ch2);
 void		env_sort(char ** env);
+char		*ft_readline();
 
 #endif

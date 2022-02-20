@@ -38,15 +38,20 @@ void	ft_export(char **args)
 	while (args[i])
 	{
 		end_name = ft_strchr(args[i], '=');
-		if (end_name == args[i])
+		if (end_name == args[i] || ft_isdigit(args[i][0]))
 		{
 			g_status = 1;
-			ft_putstr_fd("sintax error '='\n", 2);
+			ft_putstr_fd("sintax error '", 2);
+			ft_putstr_fd(args[i], 2);
+			ft_putstr_fd("'\n", 2);
 			i++;
 			continue;
 		}
 		if (end_name == NULL)
-			return ;
+		{
+			i++;
+			continue;	
+		}
 		name = ft_calloc(sizeof(char), (end_name - args[i] + 1));
 		if (name == NULL)
 		{
