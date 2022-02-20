@@ -32,8 +32,6 @@ int	here_doc(char *limit)
 	pid_t pid;
 
 	pipe(end);
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
 	pid = fork();
 	g_pid = pid;
 	if (!pid)
@@ -42,7 +40,5 @@ int	here_doc(char *limit)
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 	wait(NULL);
-	signal(SIGINT, sigint_handler);
-	signal(SIGQUIT, sigint_handler);
 	return (end[READ_FD]);
 }
