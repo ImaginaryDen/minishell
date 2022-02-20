@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <dirent.h>
 
 typedef struct s_info
 {
@@ -77,5 +78,6 @@ int			ft_isspace_ispipe(char ch);
 int			ft_isredirect(char ch1, char ch2);
 void		env_sort(char ** env);
 char		*ft_readline();
+char		**get_files(char *path);
 
 #endif
