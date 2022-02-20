@@ -54,7 +54,10 @@ char	*prompt()
 char	*ft_readline()
 {
 	char	*res;
+	char	*prompt_str;
 
-	res = readline(prompt());
+	prompt_str = prompt();
+	res = readline(prompt_str);
+	free(prompt_str);
 	return res;
 }
