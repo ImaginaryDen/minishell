@@ -1,4 +1,5 @@
 #include "minishell.h"
+
 static void	process(int sign_num)
 {
 	if (!kill(g_pid, sign_num))
