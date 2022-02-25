@@ -23,9 +23,7 @@ char	*prompt()
 	tmp = get_env("USER");
 	str = ft_strdup(BEGIN(32, 1));
 	if (tmp && ft_strchr(tmp, '='))
-	{
 		str = ft_add_str(str, ft_strdup(ft_strchr(tmp, '=') + 1));
-	}
 	str = ft_add_str(str, ft_strdup("@"CLOSE":"));
 	str = ft_add_str(str, ft_strdup(BEGIN(34, 1)));
 	path = getcwd(NULL, 0);
@@ -46,8 +44,7 @@ char	*prompt()
 		}
 	}
 	str = ft_add_str(str, path);
-	str = ft_add_str(str, ft_strdup(CLOSE));
-	str = ft_add_str(str, ft_strdup("$ "));
+	str = ft_add_str(str, ft_strdup(CLOSE"$ "));
 	return (str);
 }
 

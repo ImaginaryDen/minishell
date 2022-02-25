@@ -17,6 +17,8 @@ void ft_add_history(char *str)
 	int	i;
 
 	i = 0;
+	if (str[0] == 0)
+		return ;
 	while (g_history && g_history[i])
 		i++;
 	g_history = ft_realloc(g_history, sizeof(char *) * i, sizeof(char *) * (i + 2));

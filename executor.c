@@ -16,6 +16,8 @@ int	executor(t_pipe_data *comand)
 	for(int i = 0; i < size; i++)
 		ft_free_dable_arr(comand[i].cmd_arg);
 	g_pid = 0;
+	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, sigint_handler);
 	free(comand);
 	return (0);
 }
