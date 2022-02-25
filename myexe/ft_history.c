@@ -4,6 +4,7 @@ void	ft_history(char **args)
 {
 	int i;
 
+	(void)args;
 	i = 0;
 	while(g_history && g_history[i])
 	{

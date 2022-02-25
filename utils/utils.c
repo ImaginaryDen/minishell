@@ -1,26 +1,28 @@
 #include "minishell.h"
 
-void	ft_free_array(char **array)
+void	char_arr_sort(char ** env)
 {
-	int	i;
+	char	*tmp;
+	int		i;
+	int		j;
 
+	tmp = NULL;
 	i = 0;
-	while (array[i])
+	while (env[i])
 	{
-		free(array[i]);
+		j = i + 1;
+		while (env[j])
+		{
+			if(ft_strncmp(env[i], env[j], ft_strlen(env[i])) > 0)
+			{
+				tmp = env[i];
+				env[i] = env[j];
+				env[j] = tmp;
+			}
+			j++;
+		}
 		i++;
 	}
-	free(array);
-}
-
-int	ft_size_arr(char **arr)
-{
-	int	i;
-
-	i = 0;
-	while (arr && arr[i])
-		i++;
-	return (i);
 }
 
 char **get_files(char *path)
@@ -59,4 +61,27 @@ void	exit_if_null(void *ptr, const char *msg_err)
 	perror(msg_err);
 	g_status = 1;
 	ft_exit(NULL);
+}
+
+char **copy_envp(char **envp)
+{
+	int		size;
+	char	**copy_envp;
+	int		i;
+
+	size = 0;
+	while (envp[size])
+		size++;
+	copy_envp = malloc(sizeof(char *) * (size + 1));
+	exit_if_null(copy_envp, "malloc");
+	if (!copy_envp)
+		return (NULL);
+	i = 0;
+	while (i < size)
+	{
+		copy_envp[i] = ft_strdup(envp[i]);
+		i++;
+	}
+	copy_envp[i] = NULL;
+	return (copy_envp);
 }

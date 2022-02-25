@@ -4,6 +4,7 @@ void ft_pwd(char **arg)
 {
 	char	*path;
 	
+	(void)arg;
 	path = getcwd(NULL, 0);
 	g_status = 0;
 	if (!path)

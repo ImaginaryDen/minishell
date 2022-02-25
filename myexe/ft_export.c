@@ -15,7 +15,7 @@ void show_export()
 		copy_env[i] = g_envp[i];
 		i++;
 	}
-	env_sort(copy_env);
+	char_arr_sort(copy_env);
 	i = 0;
 	while(i < size)
 	{

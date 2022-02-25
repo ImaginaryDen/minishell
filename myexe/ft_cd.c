@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static char	*add_home_path(char *path)
+char	*add_home_path(char *path)
 {
 	char		*tmp;
 
@@ -11,7 +11,7 @@ static char	*add_home_path(char *path)
 	return (tmp);
 }
 
-static int	change(char *path)
+int	change(char *path)
 {
 	char	*pwd;
 
@@ -34,7 +34,7 @@ static int	change(char *path)
 	return (0);
 }
 
-int			set_directory(char *path)
+int	set_directory(char *path)
 {
 	struct stat	st;
 
@@ -53,7 +53,7 @@ int			set_directory(char *path)
 	return (1);
 }
 
-void ft_cd(char **args)
+void	ft_cd(char **args)
 {
 	char	*path;
 

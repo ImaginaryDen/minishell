@@ -1,10 +1,11 @@
 #include "minishell.h"
 
-void ft_env(char **arg)
+void	ft_env(char **arg)
 {
 	int	i;
 
 	i = 0;
+	(void)arg;
 	g_status = 0;
 	while (g_envp && g_envp[i])
 	{
