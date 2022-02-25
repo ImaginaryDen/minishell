@@ -26,7 +26,6 @@ void	ft_echo(char **arg)
 	int is_n;
 
 	i = 1;
-	g_status = 0;
 	is_n = skip_flag(arg, &i);
 	while(arg[i])
 	{

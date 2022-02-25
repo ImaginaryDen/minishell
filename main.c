@@ -5,8 +5,8 @@ void init_shell(char **envp)
 	char *tmp;
 	int tmp_num;
 
-	g_envp = copy_envp(envp);
-	g_status = 0;
+	g_info.envp = copy_envp(envp);
+	g_info.status = 0;
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, sigint_handler);
 	tmp = get_env("SHLVL");

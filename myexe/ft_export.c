@@ -7,12 +7,12 @@ void show_export()
 	int		size;
 	int		tmp;
 
-	size = ft_size_arr(g_envp);
+	size = ft_size_arr(g_info.envp);
 	copy_env = ft_calloc(size + 1, sizeof(char *));
 	i = 0;
 	while (i < size)
 	{
-		copy_env[i] = g_envp[i];
+		copy_env[i] = g_info.envp[i];
 		i++;
 	}
 	char_arr_sort(copy_env);
@@ -29,7 +29,7 @@ void show_export()
 
 void print_err_export(char *msg)
 {
-	g_status = 1;
+	g_info.status = 1;
 	ft_putstr_fd("minishell: export: '", 2);
 	ft_putstr_fd(msg, 2);
 	ft_putstr_fd("' not a valid identifier\n", 2);

@@ -17,9 +17,10 @@
 
 typedef struct s_info
 {
-	int status;
-	char **env;
-	char **comands;
+	char	**envp;
+	char	**history;
+	int		status;
+	int		pid;
 }t_info;
 
 typedef struct s_pipe_data
@@ -29,10 +30,7 @@ typedef struct s_pipe_data
 	char	**cmd_arg;
 }	t_pipe_data;
 
-char	**g_envp;
-char	**g_history;
-int		g_status;
-int		g_pid;
+t_info g_info;
 
 # define READ_FD 0
 # define WRITE_FD 1
@@ -87,5 +85,6 @@ int			return_error(char *cmd, char *msg, int status);
 void		line_shift(char *line, int i, int shift);
 char		**get_files(char *path);
 void		exit_if_null(void *ptr, const char *msg_err);
+int			ft_isspace_s(char ch);
 
 #endif

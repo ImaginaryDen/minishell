@@ -30,7 +30,7 @@ void check_cmd(t_pipe_data *data)
 
 	if (!ft_strncmp(data->cmd_arg[0], "./", 2) || data->cmd_arg[0][0] == '/' || get_env("PATH") == NULL)
 		return ;
-	paths = ft_get_paths(g_envp);
+	paths = ft_get_paths(g_info.envp);
 	i = 0;
 	while (paths[i])
 	{
@@ -45,7 +45,7 @@ void check_cmd(t_pipe_data *data)
 		path_cmd = NULL;
 		i++;
 	}
-	ft_free_dable_arr(paths);
+	ft_free_double_arr(paths);
 }
 
 int	check(char **args)

@@ -33,7 +33,7 @@ int	here_doc(char *limit)
 
 	pipe(end);
 	pid = fork();
-	g_pid = pid;
+	g_info.pid = pid;
 	if (!pid)
 		here_doc_gnl(end, limit);
 	close(end[WRITE_FD]);

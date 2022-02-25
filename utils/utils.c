@@ -59,7 +59,7 @@ void	exit_if_null(void *ptr, const char *msg_err)
 	if (ptr)
 		return ;
 	perror(msg_err);
-	g_status = 1;
+	g_info.status = 1;
 	ft_exit(NULL);
 }
 

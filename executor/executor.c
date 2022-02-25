@@ -14,8 +14,8 @@ int	executor(t_pipe_data *comand)
 	else if (size > 1)
 		ft_run_cmds(comand, size);
 	for(int i = 0; i < size; i++)
-		ft_free_dable_arr(comand[i].cmd_arg);
-	g_pid = 0;
+		ft_free_double_arr(comand[i].cmd_arg);
+	g_info.pid = 0;
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, sigint_handler);
 	free(comand);

@@ -40,7 +40,7 @@ int	exev_include(t_pipe_data *data)
 	i = get_command(data->cmd_arg[0]);
 	if (i >= 0)
 	{
-		g_status = 0;
+		g_info.status = 0;
 		command[i](data->cmd_arg);
 		return (1);
 	}

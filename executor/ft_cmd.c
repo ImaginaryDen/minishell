@@ -3,12 +3,12 @@
 void		status_child(int pid)
 {
 	if (WIFEXITED(pid))
-		g_status = WEXITSTATUS(pid);
+		g_info.status = WEXITSTATUS(pid);
 	if (WIFSIGNALED(pid))
 	{
-		g_status = WTERMSIG(pid);
-		if (g_status != 131)
-			g_status += 128;
+		g_info.status = WTERMSIG(pid);
+		if (g_info.status != 131)
+			g_info.status += 128;
 	}
 }
 
@@ -24,20 +24,20 @@ void fork_cmd(t_pipe_data *data)
 	int	status;
 
 	check_cmd(data);
-		g_pid = fork();
-		if (!g_pid)
+		g_info.pid = fork();
+		if (!g_info.pid)
 			if (!check(data->cmd_arg))
-				execve(data->cmd_arg[0], data->cmd_arg, g_envp);
+				execve(data->cmd_arg[0], data->cmd_arg, g_info.envp);
 			else
-				exit(g_status);
+				exit(g_info.status);
 		if (ft_strnstr(data->cmd_arg[0], "minishell",
 			ft_strlen(data->cmd_arg[0])))
 		{
 			signal(SIGINT, SIG_IGN);
 			signal(SIGQUIT, SIG_IGN);	
 		}
-		waitpid(g_pid, &status, 0);
-		g_pid = 0;
+		waitpid(g_info.pid, &status, 0);
+		g_info.pid = 0;
 		status_child(status);
 }
 
@@ -77,16 +77,16 @@ int	ft_cmd(t_pipe_data *data)
 	{
 		check_cmd(data);
 		if (!check(data->cmd_arg) && data->cmd_arg != NULL)
-			execve(data->cmd_arg[0], data->cmd_arg, g_envp);
+			execve(data->cmd_arg[0], data->cmd_arg, g_info.envp);
 	}
-	exit(g_status);
+	exit(g_info.status);
 }
 
 void	free_cmd(t_pipe_data *data)
 {
 	if (data->cmd_arg)
 	{
-		ft_free_dable_arr(data->cmd_arg);
+		ft_free_double_arr(data->cmd_arg);
 		data->cmd_arg = NULL;
 	}
 }
@@ -94,7 +94,7 @@ void	free_cmd(t_pipe_data *data)
 pid_t	get_fork(t_pipe_data *cmd, pid_t *pid, int i)
 {
 	pid[i] = fork();
-	g_pid = pid[i];
+	g_info.pid = pid[i];
 	if (pid[i] == -1)
 	{
 		perror("fork");

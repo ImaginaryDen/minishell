@@ -250,13 +250,13 @@ t_pipe_data *parser(char *line, t_info *info)
 		while (commands_line[i][j])
 		{
 			if ((commands_line[i][j] == '\'') || (commands_line[i][j] == '\"'))
-				commands_line[i] = quotation(commands_line[i], &j, g_envp);
+				commands_line[i] = quotation(commands_line[i], &j, g_info.envp);
 			else if (commands_line[i][j] == '\\')
 				slash(commands_line[i], j);
 			else if (commands_line[i][j] == '$')
 			{
 				save = j;
-				commands_line[i] = env_var(commands_line[i], &j, g_envp);
+				commands_line[i] = env_var(commands_line[i], &j, g_info.envp);
 				while (save <= j)
 				{
 					if (split_cmd(commands_line[i], &save, &start, &(cmds[size - 1])) == 1)
