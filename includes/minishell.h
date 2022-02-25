@@ -79,5 +79,6 @@ int			ft_isredirect(char ch1, char ch2);
 void		env_sort(char ** env);
 char		*ft_readline();
 char		**get_files(char *path);
+void		exit_if_null(void *ptr, const char *msg_err);
 
 #endif

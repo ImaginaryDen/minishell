@@ -126,6 +126,7 @@ int	ft_run_cmds(t_pipe_data *cmds, int size)
 	pid_t	*pid_cmd;
 
 	pid_cmd = malloc(sizeof(pid_t) * size);
+	exit_if_null(pid_cmd, "malloc");
 	ft_bzero(pid_cmd, sizeof(pid_t) * size);
 	if (!pid_cmd)
 		return (0);

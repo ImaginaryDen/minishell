@@ -51,3 +51,12 @@ char **get_files(char *path)
 	}
 	return (all_name);
 }
+
+void	exit_if_null(void *ptr, const char *msg_err)
+{
+	if (ptr)
+		return ;
+	perror(msg_err);
+	g_status = 1;
+	ft_exit(NULL);
+}

@@ -45,6 +45,7 @@ static int	ft_add_words(char const *s, char **words)
 			else
 				size = end - start + 1;
 			*words = malloc(sizeof(char) * size);
+			exit_if_null(*words, "malloc");
 			if (!*words)
 				return (0);
 			ft_strlcpy(*words, start, size);

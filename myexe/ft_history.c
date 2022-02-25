@@ -17,7 +17,7 @@ void ft_add_history(char *str)
 	int	i;
 
 	i = 0;
-	if (str[0] == 0)
+	if (!str || str[0] == 0)
 		return ;
 	while (g_history && g_history[i])
 		i++;

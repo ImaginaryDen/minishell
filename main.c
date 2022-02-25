@@ -10,6 +10,7 @@ char **copy_envp(char **envp)
 	while (envp[size])
 		size++;
 	copy_envp = malloc(sizeof(char *) * (size + 1));
+	exit_if_null(copy_envp, "malloc");
 	if (!copy_envp)
 		return (NULL);
 	i = 0;
