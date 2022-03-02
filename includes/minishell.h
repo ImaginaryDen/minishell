@@ -71,11 +71,12 @@ char		*quotation(char *line, int *i, char **env);
 int			redirect(t_pipe_data *cmds, int *j, char *line);
 void		ft_free_array(char **array);
 int			ft_size_arr(char **arr);
-void		slash(char *line, int i);
+void		slash(char *line, int *i);
 void		line_shift(char *line, int i, int shift);
 int			ft_isspace_ispipe(char ch);
 int			ft_isredirect(char ch1, char ch2);
 void		env_sort(char ** env);
 char		*ft_readline();
+char		**preparser(char **line);
 
 #endif

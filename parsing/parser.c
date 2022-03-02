@@ -10,16 +10,10 @@
 // echo """"""""""              :""
 // echo """""""""",         wtf     :""
 // echo $?
-// export str1 2str = _3str str4=str5 
-// echo "hello;"; $q'c'"h"o $test
-//  echo         \'\"\\
 // echo ~
 // 1) >fil$q'1' e$w"ho" s$i"r"ing f$r$u file1
 // 2) pwd ; cat file1
-// pwd; echo $PWD
 // ~ брать не из env!
-// cd; echo $PWD; cd -
-// ls "-la" ; cd -
 // echo \'\"\\ "\hello\$PWD"
 // echo "\""
 // echo "\'"
@@ -34,6 +28,7 @@
 // echo hello '\' ';' "   '\' \" " \" "$PWD\\\"\~\;"\; >> t1 \' \ \ \\; cat t1
 // \ls\ ;
 // export a1=a2 ; export a2=' a3' ; export a1=hello$a2=poka
+// нельзя удалять пробелы с конца из-за /...
 
 void	line_shift(char *line, int i, int shift)
 {
@@ -44,99 +39,10 @@ void	line_shift(char *line, int i, int shift)
 	}
 }
 
-void	slash(char *line, int i)
+void	slash(char *line, int *i)
 {
-	line_shift(line, i, 1);
-}
-
-void skip_isspace(char *line, int *i)
-{
-	while (line[*i] && ((line[*i] >= 9 && line[*i] <= 13) || line[*i] == 32))
-		(*i)++;
-}
-
-int skip_isspace_reverse(char *line, int *i)
-{
-	while ((i != 0) && ((line[*i] >= 9 && line[*i] <= 13) || line[*i] == 32))
-		(*i)--;
-}
-
-int	skip_quotations(char *line, int *i)
-{
-	char	quote_type;
-	quote_type = line[*i];
+	line_shift(line, *i, 1);
 	(*i)++;
-	while (line[*i] && line[*i] != quote_type)
-		(*i)++;
-	if (!line[*i])
-		return (1);
-	(*i)++;
-	return (0);
-}
-
-char	**preparser(char **line)
-{
-	int	i;
-	int count_qoutes;
-	int count_double_qoutes;
-	int len;
-	char *tmp;
-	const char	isspace[7] = {9, 10, 11, 12, 13, 32, 0};
-	char	**commands_line;
-	int j;
-
-	i = 0;
-	
-	count_qoutes = 0;
-	count_double_qoutes = 0;
-	tmp = *line;
-	*line = ft_strtrim(*line, isspace);
-	free(tmp);
-	len = ft_strlen(*line);
-//	if (!len)
-//		return (NULL);
-	if (len > 1 && (*line)[len - 1] == '\\' && (*line)[len - 2] != '\\')
-		return (NULL);
-	if ((*line)[i] == ';' || (*line)[i] == '|')
-		return (NULL);
-	i++;
-	while (i < len)
-	{
-		if ((*line)[i] == ';' && (*line)[i - 1] == ';')
-			return (NULL);
-		i++;
-	}
-	i = 0;
-	j = 1;
-	int start = 0;
-	commands_line = ft_calloc(j, sizeof(char *));
-	while ((*line)[i])
-	{
-		if ((*line)[i] == '\'' || (*line)[i] == '\"')
-		{
-			if (skip_quotations(*line, &i) == 1)
-				return (NULL);
-		}
-		if (((*line)[i] == ';') || ((*line)[i + 1] == '\0'))
-		{
-			if (((*line)[i] != ';') && ((*line)[i + 1] == '\0'))
-				i++;
-			commands_line = ft_realloc(commands_line, sizeof(char *) * j, sizeof(char *) * (j + 1));
-			commands_line[j - 1] = ft_substr(*line, start, i - start);
-			tmp = commands_line[j - 1];
-			commands_line[j - 1] = ft_strtrim(commands_line[j - 1], isspace);
-			free(tmp);
-			len = ft_strlen(commands_line[j - 1]);
-			if (commands_line[j - 1][0] == '\0' || commands_line[j - 1][0] == '|' || commands_line[j - 1][len - 1] == '|')
-				return (NULL);
-			start = i + 1;
-			if ((*line)[i] == '\0')
-				i--;
-			j++;
-		}
-		i++;
-	}
-	return (commands_line);
 }
 
 void	define_fds(t_pipe_data *cmds)
@@ -200,7 +106,7 @@ int split_cmd(char *line, int *j, int *start, t_pipe_data *cmd)
 
 	if (ft_isspace_ispipe(line[*j]) || line[*j + 1] == '\0')
 	{
-		if (!ft_isspace_ispipe(line[*j]) && line[*j + 1] == '\0')
+		if (line[*j + 1] == '\0')
 			(*j)++;
 		if ((*j) - *start > 0)
 		{
@@ -237,7 +143,6 @@ t_pipe_data *parser(char *line, t_info *info)
 		return (NULL);
 	}
 	i = 0;
-//	commands_line = ft_split(line, ';');
 	while (commands_line[i])
 	{
 		size = ft_define_size(commands_line[i]);
@@ -252,7 +157,10 @@ t_pipe_data *parser(char *line, t_info *info)
 			if ((commands_line[i][j] == '\'') || (commands_line[i][j] == '\"'))
 				commands_line[i] = quotation(commands_line[i], &j, g_envp);
 			else if (commands_line[i][j] == '\\')
-				slash(commands_line[i], j);
+			{
+				slash(commands_line[i], &j);
+				continue ;
+			}
 			else if (commands_line[i][j] == '$')
 			{
 				save = j;
@@ -285,6 +193,7 @@ t_pipe_data *parser(char *line, t_info *info)
 				continue ;
 			j++;
 		}
+		printf("%s\n", commands_line[i]);
 		cmds_fds(commands_line[i], cmds, size);
 		executor(cmds);
 		i++;
