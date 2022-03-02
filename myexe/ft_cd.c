@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static char	*add_home_path(char *path)
+char	*add_home_path(char *path)
 {
 	char		*tmp;
 
@@ -8,11 +8,10 @@ static char	*add_home_path(char *path)
 	if (ft_strncmp(path, "~/", 2) || !tmp)
 		return (path);
 	tmp = ft_strjoin(ft_strchr(tmp, '=') + 1, path + 1);
-	free(path);
 	return (tmp);
 }
 
-static int	change(char *path)
+int	change(char *path)
 {
 	char	*pwd;
 
@@ -35,7 +34,7 @@ static int	change(char *path)
 	return (0);
 }
 
-int			set_directory(char *path)
+int	set_directory(char *path)
 {
 	struct stat	st;
 
@@ -43,7 +42,7 @@ int			set_directory(char *path)
 		return (1);
 	ft_putstr_fd("minishell: cd: ", 2);
 	ft_putstr_fd(path, 2);
-	g_status = 1;
+	g_info.status = 1;
 	if (stat(path, &st) == -1)
 		ft_putstr_fd(": No such file or directory", 2);
 	else if (!(st.st_mode & S_IXUSR))
@@ -54,40 +53,31 @@ int			set_directory(char *path)
 	return (1);
 }
 
-void ft_cd(char **args)
+void	ft_cd(char **args)
 {
 	char	*path;
 
-	path = NULL;
-	g_status = 0;
 	if (args[1] && args[2])
-	{
-		ft_putstr_fd("too many arguments\n", STDERR_FILENO);
-	}
-	if (args[1] && !ft_strncmp(args[1], "-", 2))
+		return_error("cd: ", "too many arguments\n", 2);
+	else if (args[1] && !ft_strncmp(args[1], "-", 2))
 	{
 		path = get_env("OLDPWD");
 		if (!path)
-			ft_putstr_fd("Error OLDPWD\n", STDERR_FILENO);
+			return_error("cd: ", "OLDPWD not set\n", 1);
 		else
 		{
 			set_directory(ft_strchr(path, '=') + 1);
 			printf("%s\n", ft_strchr(get_env("PWD"), '=') + 1);
 		}
-		return ;
 	}
-	if (!args[1] || !ft_strncmp(args[1], "~", 1) || !ft_strncmp(args[1], "--", 3))
+	else if (!args[1] || !ft_strncmp(args[1], "~", 1)
+		|| !ft_strncmp(args[1], "--", 3))
 	{
 		if (!(path = get_env("HOME")))
-		{
-			ft_putstr_fd("minishell: cd: HOME not set\n", 2);
-			g_status = 1;
-			return ;
-		}
-		set_directory(ft_strchr(path, '=') + 1);
-		return ;
+			return_error("cd: ", "HOME not set\n", 1);
+		else
+			set_directory(ft_strchr(path, '=') + 1);
 	}
-	args[1] = add_home_path(args[1]);
-	set_directory(args[1]);
-	return ;
+	else
+		set_directory(add_home_path(args[1]));
 }

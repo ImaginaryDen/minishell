@@ -1,34 +1,12 @@
 #include "minishell.h"
 
-char **copy_envp(char **envp)
-{
-	int		size;
-	char	**copy_envp;
-	int		i;
-
-	size = 0;
-	while (envp[size])
-		size++;
-	copy_envp = malloc(sizeof(char *) * (size + 1));
-	if (!copy_envp)
-		return (NULL);
-	i = 0;
-	while (i < size)
-	{
-		copy_envp[i] = ft_strdup(envp[i]);
-		i++;
-	}
-	copy_envp[i] = NULL;
-	return (copy_envp);
-}
-
 void init_shell(char **envp)
 {
 	char *tmp;
 	int tmp_num;
 
-	g_envp = copy_envp(envp);
-	g_status = 0;
+	g_info.envp = copy_envp(envp);
+	g_info.status = 0;
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, sigint_handler);
 	tmp = get_env("SHLVL");
@@ -48,6 +26,8 @@ int main(int argc, char **argv, char **envp)
 	t_info	info;
 	char	*line;
 
+	(void)argc;
+	(void)argv;
 	info.status = 1;
 	init_shell(envp);
 	while (info.status)

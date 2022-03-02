@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int get_command(char *str)
+int	get_command(char *str)
 {
 	const char *comands[] = {"echo", "env", "pwd", "cd", "exit", "export", "unset", "history", NULL};
 	int i;
@@ -15,16 +15,35 @@ int get_command(char *str)
 	return (-1);
 }
 
-int exev_include(t_pipe_data *data)
+void	*init_commnds()
 {
-	void (*command[])(char **) = {ft_echo, ft_env, ft_pwd, ft_cd, ft_exit, ft_export, ft_unset, ft_history};
+	void	(**command)(char **);
+
+	command = malloc(sizeof(void *) * 8);
+	command[0] = ft_echo;
+	command[1] = ft_env;
+	command[2] = ft_pwd;
+	command[3] = ft_cd;
+	command[4] = ft_exit;
+	command[5] = ft_export;
+	command[6] = ft_unset;
+	command[7] = ft_history;
+	return (command);
+}
+
+int	exev_include(t_pipe_data *data)
+{
+	void (**command)(char **);
 	int	i;
 
+	command = init_commnds();
 	i = get_command(data->cmd_arg[0]);
 	if (i >= 0)
 	{
+		g_info.status = 0;
 		command[i](data->cmd_arg);
 		return (1);
 	}
+	free(command);
 	return (0);
 }

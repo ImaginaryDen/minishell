@@ -23,11 +23,9 @@ int	skip_flag(char **arg, int *i)
 void	ft_echo(char **arg)
 {
 	int i;
-	int	j;
 	int is_n;
 
 	i = 1;
-	g_status = 0;
 	is_n = skip_flag(arg, &i);
 	while(arg[i])
 	{

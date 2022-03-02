@@ -24,37 +24,6 @@ static size_t	ft_count_words(char const *s)
 	return (count);
 }
 
-static int	ft_add_words(char const *s, char **words)
-{
-	char	*start;
-	char	*end;
-	size_t	size;
-
-	start = (char *) s;
-	while (start && *start)
-	{
-		while (ft_isspace_s(*start))
-			start++;
-		end = start;
-		while (*end && !ft_isspace_s(*end))
-			end++;
-		if (*start)
-		{
-			if (!end)
-				size = ft_strlen(start) + 1;
-			else
-				size = end - start + 1;
-			*words = malloc(sizeof(char) * size);
-			if (!*words)
-				return (0);
-			ft_strlcpy(*words, start, size);
-			words++;
-		}
-		start = end;
-	}
-	return (1);
-}
-
 static void	ft_free_words(char **words)
 {
 	char	**word;

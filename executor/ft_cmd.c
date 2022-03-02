@@ -3,13 +3,42 @@
 void		status_child(int pid)
 {
 	if (WIFEXITED(pid))
-		g_status = WEXITSTATUS(pid);
+		g_info.status = WEXITSTATUS(pid);
 	if (WIFSIGNALED(pid))
 	{
-		g_status = WTERMSIG(pid);
-		if (g_status != 131)
-			g_status += 128;
+		g_info.status = WTERMSIG(pid);
+		if (g_info.status != 131)
+			g_info.status += 128;
 	}
+}
+
+void set_redir(int *end)
+{
+	dup2(end[READ_FD], STDIN_FILENO);
+	dup2(end[WRITE_FD], STDOUT_FILENO);
+	dup2(end[ERR_FD], STDERR_FILENO);
+}
+
+void fork_cmd(t_pipe_data *data)
+{
+	int	status;
+
+	check_cmd(data);
+		g_info.pid = fork();
+		if (!g_info.pid)
+			if (!check(data->cmd_arg))
+				execve(data->cmd_arg[0], data->cmd_arg, g_info.envp);
+			else
+				exit(g_info.status);
+		if (ft_strnstr(data->cmd_arg[0], "minishell",
+			ft_strlen(data->cmd_arg[0])))
+		{
+			signal(SIGINT, SIG_IGN);
+			signal(SIGQUIT, SIG_IGN);	
+		}
+		waitpid(g_info.pid, &status, 0);
+		g_info.pid = 0;
+		status_child(status);
 }
 
 int ft_one_cmd(t_pipe_data *data)
@@ -20,35 +49,13 @@ int ft_one_cmd(t_pipe_data *data)
 	save[READ_FD] = dup(STDIN_FILENO);
 	save[WRITE_FD] = dup(STDOUT_FILENO);
 	save[ERR_FD] = dup(STDERR_FILENO);
-	dup2(data->fd_in_out[READ_FD], STDIN_FILENO);
-	dup2(data->fd_in_out[WRITE_FD], STDOUT_FILENO);
-	dup2(data->fd_in_out[ERR_FD], STDERR_FILENO);
+	set_redir(data->fd_in_out);
 	if (!exev_include(data))
-	{
-		check_cmd(data);
-		g_pid = fork();
-		if (!g_pid)
-			if (!check(data->cmd_arg))
-				execve(data->cmd_arg[0], data->cmd_arg, g_envp);
-			else
-				exit(g_status);
-		if (!ft_strncmp(data->cmd_arg[0], "./minishell", ft_strlen(data->cmd_arg[0])))
-		{
-			signal(SIGINT, SIG_IGN);
-			signal(SIGQUIT, SIG_IGN);	
-		}
-		waitpid(g_pid, &status, 0);
-		g_pid = 0;
-		signal(SIGINT, sigint_handler);
-		signal(SIGQUIT, sigint_handler);
-		status_child(status);
-	}
+		fork_cmd(data);
 	close(data->fd_in_out[READ_FD]);
 	close(data->fd_in_out[WRITE_FD]);
 	close(data->fd_in_out[ERR_FD]);
-	dup2(save[READ_FD], STDIN_FILENO);
-	dup2(save[WRITE_FD], STDOUT_FILENO);
-	dup2(save[ERR_FD], STDERR_FILENO);
+	set_redir(save);
 }
 
 int	ft_cmd(t_pipe_data *data)
@@ -70,16 +77,16 @@ int	ft_cmd(t_pipe_data *data)
 	{
 		check_cmd(data);
 		if (!check(data->cmd_arg) && data->cmd_arg != NULL)
-			execve(data->cmd_arg[0], data->cmd_arg, g_envp);
+			execve(data->cmd_arg[0], data->cmd_arg, g_info.envp);
 	}
-	exit(g_status);
+	exit(g_info.status);
 }
 
 void	free_cmd(t_pipe_data *data)
 {
 	if (data->cmd_arg)
 	{
-		ft_free_dable_arr(data->cmd_arg);
+		ft_free_double_arr(data->cmd_arg);
 		data->cmd_arg = NULL;
 	}
 }
@@ -87,7 +94,7 @@ void	free_cmd(t_pipe_data *data)
 pid_t	get_fork(t_pipe_data *cmd, pid_t *pid, int i)
 {
 	pid[i] = fork();
-	g_pid = pid[i];
+	g_info.pid = pid[i];
 	if (pid[i] == -1)
 	{
 		perror("fork");
@@ -119,6 +126,7 @@ int	ft_run_cmds(t_pipe_data *cmds, int size)
 	pid_t	*pid_cmd;
 
 	pid_cmd = malloc(sizeof(pid_t) * size);
+	exit_if_null(pid_cmd, "malloc");
 	ft_bzero(pid_cmd, sizeof(pid_t) * size);
 	if (!pid_cmd)
 		return (0);
@@ -128,10 +136,7 @@ int	ft_run_cmds(t_pipe_data *cmds, int size)
 		if (get_fork(cmds + i, pid_cmd, i))
 			break ;
 		if (!pid_cmd[i])
-		{
 			ft_cmd(cmds + i);
-			exit(0);
-		}
 		if (cmds[i].fd_in_out[WRITE_FD] != STDOUT_FILENO)
 			close(cmds[i].fd_in_out[WRITE_FD]);
 		if (cmds[i].fd_in_out[READ_FD] != STDIN_FILENO)

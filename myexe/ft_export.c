@@ -7,15 +7,15 @@ void show_export()
 	int		size;
 	int		tmp;
 
-	size = ft_size_arr(g_envp);
+	size = ft_size_arr(g_info.envp);
 	copy_env = ft_calloc(size + 1, sizeof(char *));
 	i = 0;
 	while (i < size)
 	{
-		copy_env[i] = g_envp[i];
+		copy_env[i] = g_info.envp[i];
 		i++;
 	}
-	env_sort(copy_env);
+	char_arr_sort(copy_env);
 	i = 0;
 	while(i < size)
 	{
@@ -27,6 +27,14 @@ void show_export()
 	free(copy_env);
 }
 
+void print_err_export(char *msg)
+{
+	g_info.status = 1;
+	ft_putstr_fd("minishell: export: '", 2);
+	ft_putstr_fd(msg, 2);
+	ft_putstr_fd("' not a valid identifier\n", 2);
+}
+
 void	ft_export(char **args)
 {
 	int		i;
@@ -34,33 +42,18 @@ void	ft_export(char **args)
 	char	*end_name;
 
 	i = 1;
-	g_status = 0;
 	while (args[i])
 	{
 		end_name = ft_strchr(args[i], '=');
 		if (end_name == args[i] || ft_isdigit(args[i][0]))
+			print_err_export(args[i]);
+		else if (end_name != NULL)
 		{
-			g_status = 1;
-			ft_putstr_fd("sintax error '", 2);
-			ft_putstr_fd(args[i], 2);
-			ft_putstr_fd("'\n", 2);
-			i++;
-			continue;
+			name = ft_calloc(sizeof(char), (end_name - args[i] + 2));
+			ft_strlcpy(name, args[i], end_name - args[i] + 1);
+			set_env(name, args[i] + (end_name - args[i] + 1));
+			free(name);
 		}
-		if (end_name == NULL)
-		{
-			i++;
-			continue;	
-		}
-		name = ft_calloc(sizeof(char), (end_name - args[i] + 1));
-		if (name == NULL)
-		{
-			ft_putstr_fd("error\n", 2);
-			return ;
-		}
-		ft_strlcpy(name, args[i], end_name - args[i] + 1);
-		set_env(name, args[i] + (end_name - args[i] + 1));
-		free(name);
 		i++;
 	}
 	if (i == 1)
