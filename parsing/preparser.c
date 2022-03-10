@@ -72,6 +72,8 @@ char	**preparser(char **line)
 	tmp = *line;
 	*line = ft_strtrim(*line, isspace);
 	free(tmp);
+	if (**line == '\0')
+		return (NULL);
 	i = 0;
 	int start = 0;
 	len = ft_strlen(*line);

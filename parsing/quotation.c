@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-char	*quotation(char *line, int *i, char **env)
+char	*quotation(char *line, int *i, char **env, int *flag)
 {
 	char	q_type;
 
@@ -8,6 +8,8 @@ char	*quotation(char *line, int *i, char **env)
 	line_shift(line, *i, 1);
 	while (line[*i])
 	{
+		if (flag && line[*i] == '*')
+			*flag = 1;
 		if (line[*i] == q_type)
 			break ;
 		else if ((q_type == '\"') && (line[*i] == '$'))
