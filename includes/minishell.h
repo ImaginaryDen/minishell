@@ -42,11 +42,11 @@ char		**split_isspace(char const *s);
 int			ft_isspace_ispipe(char ch);
 void		init_cmds_fds(t_pipe_data *commands, int size);
 char		*quotation(char *line, int *i, char **env);
-int			redirect(t_pipe_data *cmds, int *j, char *line);
-void		slash(char *line, int *i);
+int			redirect(t_pipe_data *cmds, char *redirect, char *filename);
 void		line_shift(char *line, int i, int shift);
 int			ft_isredirect(char ch1, char ch2);
 char		**preparser(char **line);
+char		*delete_isspace(char *line);
 /*EXECUTOR*/
 int			executor(t_pipe_data *comand);
 int			ft_run_cmds(t_pipe_data *cmds, int size);

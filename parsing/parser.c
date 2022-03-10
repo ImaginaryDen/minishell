@@ -7,9 +7,8 @@
 
 // Проблемы:
 // $321
-// echo """"""""""              :""
 // echo """""""""",         wtf     :""
-// echo $?
+// echo $?	
 // echo ~
 // 1) >fil$q'1' e$w"ho" s$i"r"ing f$r$u file1
 // 2) pwd ; cat file1
@@ -39,19 +38,15 @@ void	line_shift(char *line, int i, int shift)
 	}
 }
 
-void	slash(char *line, int *i)
-{
-	line_shift(line, *i, 1);
-	(*i)++;
-}
-
 void	define_fds(t_pipe_data *cmds)
 {
 	int	end[2];
 
 	pipe(end);
-	cmds[0].fd_in_out[WRITE_FD] = end[WRITE_FD];
-	cmds[1].fd_in_out[READ_FD] = end[READ_FD];
+	if (cmds[0].fd_in_out[WRITE_FD] == STDOUT_FILENO)
+		cmds[0].fd_in_out[WRITE_FD] = end[WRITE_FD];
+	if (cmds[0].fd_in_out[READ_FD] == STDIN_FILENO)
+		cmds[1].fd_in_out[READ_FD] = end[READ_FD];
 	if (cmds[0].fd_close[0] == -1)
 		cmds[0].fd_close[0] = cmds[1].fd_in_out[READ_FD];
 	else
@@ -62,7 +57,7 @@ void	define_fds(t_pipe_data *cmds)
 		cmds[1].fd_close[1] = cmds[0].fd_in_out[WRITE_FD];
 }
 
-void	cmds_fds(char *line, t_pipe_data *cmds, int size)
+void	cmds_fds(t_pipe_data *cmds, int size)
 {
 	int	i;
 
@@ -77,16 +72,16 @@ void	cmds_fds(char *line, t_pipe_data *cmds, int size)
 	}
 }
 
-int ft_define_size(char *line)
+int ft_define_size(char **line)
 {
 	int	i;
 	int count;
 
 	i = 0;
 	count = 1;
-	while (line[i])
+	while (line[i] && ft_strncmp(line[i], "||", 2) && ft_strncmp(line[i], "&&", 2))
 	{
-		if (i != 0 && line[i] == '|' && line[i + 1])
+		if (!ft_strncmp(line[i], "|", 1))
 			count++;
 		i++;
 	}
@@ -100,29 +95,6 @@ int	ft_isspace_ispipe(char ch)
 	return (0);
 }
 
-int split_cmd(char *line, int *j, int *start, t_pipe_data *cmd)
-{
-	int	len;
-
-	if (ft_isspace_ispipe(line[*j]) || line[*j + 1] == '\0')
-	{
-		if (line[*j + 1] == '\0')
-			(*j)++;
-		if ((*j) - *start > 0)
-		{
-			len = ft_size_arr(cmd->cmd_arg);
-			cmd->cmd_arg = ft_realloc(cmd->cmd_arg, sizeof(char *) * len, sizeof(char *) * (len + 2));
-			cmd->cmd_arg[len] = ft_substr(line, *start, *j - *start);
-			*start = *j + 1;
-			if (line[*j] == '\0')
-				return (1) ;
-		}
-		else
-			(*start)++;
-	}
-	return (0);
-}
-
 t_pipe_data *parser(char *line, t_info *info)
 {
 	int		i;
@@ -130,74 +102,147 @@ t_pipe_data *parser(char *line, t_info *info)
 	char	*new_line;
 	int		size;
 	t_pipe_data *cmds;
-	char	**commands_line;
+	char	**line_split;
 	int		start;
 	int		end;
 	char	*substr;
+	int len;
 	int save;
 
-	commands_line = preparser(&line);
-	if (!commands_line)
+	cmds = NULL;
+	line_split = preparser(&line);
+	if (!line_split)
 	{
 		printf("ERROR\n");
 		return (NULL);
 	}
 	i = 0;
-	while (commands_line[i])
+	 while (line_split[i])
+	 {
+	 	printf("%d - %s\n", i, line_split[i]);
+	 	i++;
+	 }
+	 i = 0;
+	// while (line_split[i])
+	// {
+	// 	size = ft_define_size(line_split + i);
+	// 	cmds = malloc(sizeof(t_pipe_data) * (size + 1));
+	// 	cmds[size].cmd_arg = NULL;
+	// 	init_cmds_fds(cmds, size);
+	// 	j = 0;
+	// 	start = j;
+	// 	size = 1;
+	// 	while (line_split[i] && ft_strncmp(line_split[i], "||", 2) && ft_strncmp(line_split[i], "&&", 2))
+	// 	{
+	// 		if (!ft_strncmp(line_split[i], "|", 1))
+	// 		{
+	// 			size++;
+	// 			i++;
+	// 			continue ;
+	// 		}
+	// 		while (line_split[i][j])
+	// 		{
+				
+	// 		}
+			
+	// 		else if ((line_split[i][j] == '\'') || (line_split[i][j] == '\"'))
+	// 		{
+	// 			line_split[i] = quotation(line_split[i], &j, g_info.envp);
+	// 			continue ;
+	// 		}
+	// 		else if (line_split[i][j] == '$')
+	// 		{
+	// 			save = j;
+	// 			line_split[i] = env_var(line_split[i], &j, g_info.envp);
+	// 			while (save <= j)
+	// 			{
+	// 				if (split_cmd(line_split[i], &save, &start, &(cmds[size - 1])) == 1)
+	// 					continue ;
+	// 				save++;
+	// 			}
+	// 		}
+	// 		else if (ft_isredirect(line_split[i][j], line_split[i][j + 1]))
+	// 		{
+	// 			if (redirect(&(cmds[size - 1]), &j, line_split[i]) == 1)
+	// 			{
+	// 				perror("Error: ");
+	// 				break ;
+	// 			}
+	// 			start = j + 1;
+	// 		}
+	// 		else if (line_split[i][j] == '|')
+	// 		{
+	// 			if (split_cmd(line_split[i], &j, &start, &(cmds[size - 1])) == 1)
+	// 				continue ;
+	// 			j++;
+	// 			size++;
+	// 			continue ;
+	// 		}
+	// 		if (split_cmd(line_split[i], &j, &start, &(cmds[size - 1])) == 1)
+	// 			continue ;
+	// 		j++;
+	// 	}
+	// 	printf("%s\n", line_split[i]);
+	// 	cmds_fds(line_split[i], cmds, size);
+	// 	executor(cmds);
+	// 	i++;
+	// }
+
+	while (line_split[i])
 	{
-		size = ft_define_size(commands_line[i]);
-		cmds = malloc(sizeof(t_pipe_data) * (size + 1));
-		cmds[size].cmd_arg = NULL;
-		init_cmds_fds(cmds, size);
-		j = 0;
-		start = j;
-		size = 1;
-		while (commands_line[i][j])
+		size = ft_define_size(line_split + i);
+	 	cmds = malloc(sizeof(t_pipe_data) * (size + 1));
+	 	cmds[size].cmd_arg = NULL;
+	 	init_cmds_fds(cmds, size);
+	 	size = 1;
+		while (line_split[i] && ft_strncmp(line_split[i], "||", 2) && ft_strncmp(line_split[i], "&&", 2))
 		{
-			if ((commands_line[i][j] == '\'') || (commands_line[i][j] == '\"'))
-				commands_line[i] = quotation(commands_line[i], &j, g_info.envp);
-			else if (commands_line[i][j] == '\\')
+			j = 0;
+			if (!ft_strncmp(line_split[i], "|", 1))
 			{
-				slash(commands_line[i], &j);
-				continue ;
-			}
-			else if (commands_line[i][j] == '$')
-			{
-				save = j;
-				commands_line[i] = env_var(commands_line[i], &j, g_info.envp);
-				while (save <= j)
-				{
-					if (split_cmd(commands_line[i], &save, &start, &(cmds[size - 1])) == 1)
-						continue ;
-					save++;
-				}
-			}
-			else if (ft_isredirect(commands_line[i][j], commands_line[i][j + 1]))
-			{
-				if (redirect(&(cmds[size - 1]), &j, commands_line[i]) == 1)
-				{
-					perror("Error: ");
-					break ;
-				}
-				start = j + 1;
-			}
-			else if (commands_line[i][j] == '|')
-			{
-				if (split_cmd(commands_line[i], &j, &start, &(cmds[size - 1])) == 1)
-					continue ;
-				j++;
 				size++;
+				i++;
 				continue ;
 			}
-			if (split_cmd(commands_line[i], &j, &start, &(cmds[size - 1])) == 1)
-				continue ;
-			j++;
+			if (ft_isredirect(line_split[i][j], line_split[i][j + 1]))
+			{
+				if (redirect(&(cmds[size - 1]), line_split[i], line_split[i + 1]) == 1)
+	 			{
+	 				perror("Error: ");
+	 				break ;
+	 			}
+				i += 2;
+	 			continue ;
+			}
+			while (line_split[i][j])
+			{
+				if ((line_split[i][j] == '\'') || (line_split[i][j] == '\"'))
+					line_split[i] = quotation(line_split[i], &j, g_info.envp);
+				else if (line_split[i][j] == '$')
+		 		{
+		 			save = j;
+		 			line_split[i] = env_var(line_split[i], &j, g_info.envp);
+		 			// while (save <= j)						крч сделать обработку замененного значения
+		 			// {
+		 			// 	if (ft_isspace(line_split[i][j]))
+					// 	{
+							
+					// 	}
+		 			// 	j++;
+		 			// }
+		 		}
+				j++;
+			}
+			len = ft_size_arr(cmds[size - 1].cmd_arg);
+			cmds[size - 1].cmd_arg = ft_realloc(cmds[size - 1].cmd_arg, sizeof(char *) * len, sizeof(char *) * (len + 2));
+			cmds[size - 1].cmd_arg[len] = line_split[i];
+			i++;
 		}
-		printf("%s\n", commands_line[i]);
-		cmds_fds(commands_line[i], cmds, size);
-		executor(cmds);
+		cmds_fds(cmds, size);
+	 	executor(cmds);
 		i++;
 	}
-	ft_free_array(commands_line);
+
+//	ft_free_array(line_split);
 	return (cmds);
 }

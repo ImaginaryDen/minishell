@@ -10,11 +10,6 @@ char	*quotation(char *line, int *i, char **env)
 	{
 		if (line[*i] == q_type)
 			break ;
-		else if ((q_type == '\"') && (line[*i] == '\\') && (line[*i + 1] == '\"' || line[*i + 1] == '$' || line[*i + 1] == '\\'))
-		{
-			slash(line, i);
-			continue ;
-		}
 		else if ((q_type == '\"') && (line[*i] == '$'))
 			line = env_var(line, i, env);
 		(*i)++;
