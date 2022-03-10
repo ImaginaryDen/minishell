@@ -108,86 +108,21 @@ t_pipe_data *parser(char *line, t_info *info)
 	char	*substr;
 	int len;
 	int save;
+	int save_j;
+	int		operator = 0;
 
 	cmds = NULL;
 	line_split = preparser(&line);
+	free(line);
 	if (!line_split)
-	{
-		printf("ERROR\n");
 		return (NULL);
-	}
 	i = 0;
-	 while (line_split[i])
-	 {
-	 	printf("%d - %s\n", i, line_split[i]);
-	 	i++;
-	 }
-	 i = 0;
-	// while (line_split[i])
-	// {
-	// 	size = ft_define_size(line_split + i);
-	// 	cmds = malloc(sizeof(t_pipe_data) * (size + 1));
-	// 	cmds[size].cmd_arg = NULL;
-	// 	init_cmds_fds(cmds, size);
-	// 	j = 0;
-	// 	start = j;
-	// 	size = 1;
-	// 	while (line_split[i] && ft_strncmp(line_split[i], "||", 2) && ft_strncmp(line_split[i], "&&", 2))
-	// 	{
-	// 		if (!ft_strncmp(line_split[i], "|", 1))
-	// 		{
-	// 			size++;
-	// 			i++;
-	// 			continue ;
-	// 		}
-	// 		while (line_split[i][j])
-	// 		{
-				
-	// 		}
-			
-	// 		else if ((line_split[i][j] == '\'') || (line_split[i][j] == '\"'))
-	// 		{
-	// 			line_split[i] = quotation(line_split[i], &j, g_info.envp);
-	// 			continue ;
-	// 		}
-	// 		else if (line_split[i][j] == '$')
-	// 		{
-	// 			save = j;
-	// 			line_split[i] = env_var(line_split[i], &j, g_info.envp);
-	// 			while (save <= j)
-	// 			{
-	// 				if (split_cmd(line_split[i], &save, &start, &(cmds[size - 1])) == 1)
-	// 					continue ;
-	// 				save++;
-	// 			}
-	// 		}
-	// 		else if (ft_isredirect(line_split[i][j], line_split[i][j + 1]))
-	// 		{
-	// 			if (redirect(&(cmds[size - 1]), &j, line_split[i]) == 1)
-	// 			{
-	// 				perror("Error: ");
-	// 				break ;
-	// 			}
-	// 			start = j + 1;
-	// 		}
-	// 		else if (line_split[i][j] == '|')
-	// 		{
-	// 			if (split_cmd(line_split[i], &j, &start, &(cmds[size - 1])) == 1)
-	// 				continue ;
-	// 			j++;
-	// 			size++;
-	// 			continue ;
-	// 		}
-	// 		if (split_cmd(line_split[i], &j, &start, &(cmds[size - 1])) == 1)
-	// 			continue ;
-	// 		j++;
-	// 	}
-	// 	printf("%s\n", line_split[i]);
-	// 	cmds_fds(line_split[i], cmds, size);
-	// 	executor(cmds);
-	// 	i++;
-	// }
-
+	//   while (line_split[i])
+	//   {
+	//   	printf("%d - %s\n", i, line_split[i]);
+	//   	i++;
+	//   }
+	//   i = 0;
 	while (line_split[i])
 	{
 		size = ft_define_size(line_split + i);
@@ -208,8 +143,8 @@ t_pipe_data *parser(char *line, t_info *info)
 			{
 				if (redirect(&(cmds[size - 1]), line_split[i], line_split[i + 1]) == 1)
 	 			{
-	 				perror("Error: ");
-	 				break ;
+	 				perror("minishell");
+	 				return (NULL);
 	 			}
 				i += 2;
 	 			continue ;
@@ -220,27 +155,57 @@ t_pipe_data *parser(char *line, t_info *info)
 					line_split[i] = quotation(line_split[i], &j, g_info.envp);
 				else if (line_split[i][j] == '$')
 		 		{
-		 			save = j;
+		 			start = 0;
 		 			line_split[i] = env_var(line_split[i], &j, g_info.envp);
-		 			// while (save <= j)						крч сделать обработку замененного значения
-		 			// {
-		 			// 	if (ft_isspace(line_split[i][j]))
-					// 	{
-							
-					// 	}
-		 			// 	j++;
-		 			// }
+					save_j = 0;
+					if (line_split[i][0] == '\0')
+					{
+						free(line_split[i]);
+						line_split[i] = NULL;
+						break ;
+					}
+					if (j && line_split[i][j - 1] == '$' && line_split[i][j])
+					{
+						line_shift(line_split[i], j - 1, 1);
+						j--;
+						continue ;
+					}
+		 			while (save_j <= j)						
+		 			{
+						if (ft_isspace_s(line_split[i][save_j]))
+						{	
+							if (start != save_j)
+							{
+								len = ft_size_arr(cmds[size - 1].cmd_arg);
+								cmds[size - 1].cmd_arg = ft_realloc(cmds[size - 1].cmd_arg, sizeof(char *) * len, sizeof(char *) * (len + 2));
+								cmds[size - 1].cmd_arg[len] = ft_substr(line_split[i], start, save_j - start);
+								line_shift(line_split[i], 0, save_j + 1);
+								j -= save_j + 1;
+								start = save_j = 0;
+								continue ;
+							}
+							start++;
+						}
+						save_j++;
+		 			}
+					line_shift(line_split[i], 0, start);
 		 		}
 				j++;
 			}
-			len = ft_size_arr(cmds[size - 1].cmd_arg);
-			cmds[size - 1].cmd_arg = ft_realloc(cmds[size - 1].cmd_arg, sizeof(char *) * len, sizeof(char *) * (len + 2));
-			cmds[size - 1].cmd_arg[len] = line_split[i];
+			if (line_split[i])
+			{
+				len = ft_size_arr(cmds[size - 1].cmd_arg);
+				cmds[size - 1].cmd_arg = ft_realloc(cmds[size - 1].cmd_arg, sizeof(char *) * len, sizeof(char *) * (len + 2));
+				cmds[size - 1].cmd_arg[len] = line_split[i];
+			}
 			i++;
 		}
 		cmds_fds(cmds, size);
-	 	executor(cmds);
-		i++;
+		if (operator == 0 || (!ft_strncmp(line_split[operator], "||", 2) && g_info.status != 0) || (!ft_strncmp(line_split[operator], "&&", 2) && g_info.status == 0))
+	 		executor(cmds);
+		operator = i;
+		if (line_split[i])
+			i++;
 	}
 
 //	ft_free_array(line_split);

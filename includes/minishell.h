@@ -47,6 +47,7 @@ void		line_shift(char *line, int i, int shift);
 int			ft_isredirect(char ch1, char ch2);
 char		**preparser(char **line);
 char		*delete_isspace(char *line);
+int	is_key(char ch);
 /*EXECUTOR*/
 int			executor(t_pipe_data *comand);
 int			ft_run_cmds(t_pipe_data *cmds, int size);

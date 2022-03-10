@@ -81,7 +81,11 @@ char	**preparser(char **line)
 		if ((*line)[i] == '\'' || (*line)[i] == '\"')
 		{
 			if (skip_quotations(*line, &i) == 1)
+			{
+				printf("Syntax error: unclosed quote\n");
+				ft_free_array(line_split);
 				return (NULL);
+			}
 		}
 		symb = 0;
 		if (i != len)
@@ -101,39 +105,49 @@ char	**preparser(char **line)
 				if (symb % 2 == 0)
 					i++;
 				add_str(*line, &i, &start, &line_split);
+				if (i == len)
+					i++;
 				continue ;
 			}
 			start++;
 		}
 		i++;
-		// if (((*line)[i] == ';') || ((*line)[i + 1] == '\0'))
-		// {
-		// 	if (((*line)[i] != ';') && ((*line)[i + 1] == '\0'))
-		// 		i++;
-		// 	commands_line = ft_realloc(commands_line, sizeof(char *) * j, sizeof(char *) * (j + 1));
-		// 	commands_line[j - 1] = ft_substr(*line, start, i - start);
-		// 	tmp = commands_line[j - 1];
-		// 	commands_line[j - 1] = ft_strtrim(commands_line[j - 1], isspace);
-		// 	free(tmp);
-		// 	len = ft_strlen(commands_line[j - 1]);
-		// 	if (commands_line[j - 1][0] == '\0' || commands_line[j - 1][0] == '|' || commands_line[j - 1][len - 1] == '|')
-		// 	{
-		// 		printf("%s\n", commands_line[j - 1]);
-		// 		return (NULL);
-		// 	}
-		// 	start = i + 1;
-		// 	if ((*line)[i] == '\0')
-		// 		i--;
-		// 	j++;
-		// }
 	}
-	// int i = 0;
-	// int j = 0;
-	// len = ft_size_arr(line_split);
-	// while (line_split[i])
-	// {
-	// 	symb = special_symbol(line_split[i][j], line_split[i][j + 1]);
-	// 	if (symb ==)
-	// }
+	i = 0;
+	symb = special_symbol(line_split[0][0], line_split[0][1]);
+	if (symb > 1 && symb < 5)
+	{
+		printf("minishell: syntax error near unexpected token \'%s\'\n", line_split[0]);
+		ft_free_array(line_split);
+		return (NULL);
+	}
+	len = ft_size_arr(line_split);
+	symb = special_symbol(line_split[len - 1][0], line_split[len - 1][1]);
+	if (symb > 1)
+	{
+		printf("minishell: syntax error near unexpected token \'%s\'\n", line_split[len - 1]);
+		ft_free_array(line_split);
+		return (NULL);
+	}	
+	while (line_split[i])
+	{
+		symb = special_symbol(line_split[i][0], line_split[i][1]);
+		if (symb)
+		{
+			if (i - 1 > 0 && special_symbol(line_split[i - 1][0], line_split[i - 1][1]))
+			{
+				printf("minishell: syntax error near unexpected token \'%s\'\n", line_split[i]);
+				ft_free_array(line_split);
+				return (NULL);
+			}
+			if (line_split[i + 1] && special_symbol(line_split[i + 1][0], line_split[i + 1][1]) > 0 && special_symbol(line_split[i + 1][0], line_split[i + 1][1]) < 5)
+			{
+				printf("minishell: syntax error near unexpected token \'%s\'\n", line_split[i]);
+				ft_free_array(line_split);
+				return (NULL);
+			}
+		}
+		i++;
+	}
 	return (line_split);
 }
