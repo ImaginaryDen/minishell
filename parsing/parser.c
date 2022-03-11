@@ -6,43 +6,21 @@
 // добавить обработку ${}
 
 // Проблемы:
-// $321
-// echo """"""""""              :""
-// echo """""""""",         wtf     :""
-// echo $?
+// echo $?	
 // echo ~
-// 1) >fil$q'1' e$w"ho" s$i"r"ing f$r$u file1
-// 2) pwd ; cat file1
 // ~ брать не из env!
-// echo \'\"\\ "\hello\$PWD"
-// echo "\""
-// echo "\'"
-// >"helo l" echo hell\ f
-// >>"helo l" echo hell\ f ; echo hell\ f
-// echo -$t "-n" '-''n' '-n;'         -n hello
-// export a=l d=s; $a$d
-// echo ''\''"a|"\'q'a'\a'w'
-// echo \"\|\;\"\| cat -e > \q\w\e\r\t\y ; cat qwerty
-// pwd >a1>a2>a3; echo s1 >q1 s2>q2 s3; cat a2; cat a3; cat q1; cat q2; 
-// echo hello '\' ';' "   '\' \" " \" "$PWD\\\"\~\;"\; >> t1 \' \ \ \\
-// echo hello '\' ';' "   '\' \" " \" "$PWD\\\"\~\;"\; >> t1 \' \ \ \\; cat t1
-// \ls\ ;
-// export a1=a2 ; export a2=' a3' ; export a1=hello$a2=poka
-// нельзя удалять пробелы с конца из-за /...
+// export a1=a2 && export a2=' a3' && export a1=hello$a2=poka
 
 void	line_shift(char *line, int i, int shift)
 {
-	while (line[i + shift - 1])
+	int len;
+
+	len = ft_strlen(line);
+	while (i + shift - 1 < len)
 	{
 		line[i] = line[i + shift];
 		i++;
 	}
-}
-
-void	slash(char *line, int *i)
-{
-	line_shift(line, *i, 1);
-	(*i)++;
 }
 
 void	define_fds(t_pipe_data *cmds)
@@ -50,8 +28,14 @@ void	define_fds(t_pipe_data *cmds)
 	int	end[2];
 
 	pipe(end);
-	cmds[0].fd_in_out[WRITE_FD] = end[WRITE_FD];
-	cmds[1].fd_in_out[READ_FD] = end[READ_FD];
+	if (cmds[0].fd_in_out[WRITE_FD] == STDOUT_FILENO)
+		cmds[0].fd_in_out[WRITE_FD] = end[WRITE_FD];
+	else
+		close(end[WRITE_FD]);
+	if (cmds[0].fd_in_out[READ_FD] == STDIN_FILENO)
+		cmds[1].fd_in_out[READ_FD] = end[READ_FD];
+	else
+		close(end[READ_FD]);
 	if (cmds[0].fd_close[0] == -1)
 		cmds[0].fd_close[0] = cmds[1].fd_in_out[READ_FD];
 	else
@@ -62,7 +46,7 @@ void	define_fds(t_pipe_data *cmds)
 		cmds[1].fd_close[1] = cmds[0].fd_in_out[WRITE_FD];
 }
 
-void	cmds_fds(char *line, t_pipe_data *cmds, int size)
+void	cmds_fds(t_pipe_data *cmds, int size)
 {
 	int	i;
 
@@ -77,16 +61,16 @@ void	cmds_fds(char *line, t_pipe_data *cmds, int size)
 	}
 }
 
-int ft_define_size(char *line)
+int ft_define_size(char **line)
 {
 	int	i;
 	int count;
 
 	i = 0;
 	count = 1;
-	while (line[i])
+	while (line[i] && ft_strncmp(line[i], "||", 2) && ft_strncmp(line[i], "&&", 2))
 	{
-		if (i != 0 && line[i] == '|' && line[i + 1])
+		if (!ft_strncmp(line[i], "|", 1))
 			count++;
 		i++;
 	}
@@ -100,29 +84,6 @@ int	ft_isspace_ispipe(char ch)
 	return (0);
 }
 
-int split_cmd(char *line, int *j, int *start, t_pipe_data *cmd)
-{
-	int	len;
-
-	if (ft_isspace_ispipe(line[*j]) || line[*j + 1] == '\0')
-	{
-		if (line[*j + 1] == '\0')
-			(*j)++;
-		if ((*j) - *start > 0)
-		{
-			len = ft_size_arr(cmd->cmd_arg);
-			cmd->cmd_arg = ft_realloc(cmd->cmd_arg, sizeof(char *) * len, sizeof(char *) * (len + 2));
-			cmd->cmd_arg[len] = ft_substr(line, *start, *j - *start);
-			*start = *j + 1;
-			if (line[*j] == '\0')
-				return (1) ;
-		}
-		else
-			(*start)++;
-	}
-	return (0);
-}
-
 t_pipe_data *parser(char *line, t_info *info)
 {
 	int		i;
@@ -130,74 +91,125 @@ t_pipe_data *parser(char *line, t_info *info)
 	char	*new_line;
 	int		size;
 	t_pipe_data *cmds;
-	char	**commands_line;
+	char	**line_split;
 	int		start;
 	int		end;
 	char	*substr;
+	int len;
 	int save;
+	int save_j;
+	int		operator = 0;
+	int		flag;
 
-	commands_line = preparser(&line);
-	if (!commands_line)
-	{
-		printf("ERROR\n");
+	cmds = NULL;
+	line_split = preparser(&line);
+	free(line);
+	if (!line_split)
 		return (NULL);
-	}
 	i = 0;
-	while (commands_line[i])
+	//   while (line_split[i])
+	//   {
+	//   	printf("%d - %s\n", i, line_split[i]);
+	//   	i++;
+	//   }
+	//   i = 0;
+	while (line_split[i])
 	{
-		size = ft_define_size(commands_line[i]);
-		cmds = malloc(sizeof(t_pipe_data) * (size + 1));
-		cmds[size].cmd_arg = NULL;
-		init_cmds_fds(cmds, size);
-		j = 0;
-		start = j;
-		size = 1;
-		while (commands_line[i][j])
+		size = ft_define_size(line_split + i);
+	 	cmds = malloc(sizeof(t_pipe_data) * (size + 1));
+	 	cmds[size].cmd_arg = NULL;
+	 	init_cmds_fds(cmds, size);
+	 	size = 1;
+		while (line_split[i] && ft_strncmp(line_split[i], "||", 2) && ft_strncmp(line_split[i], "&&", 2))
 		{
-			if ((commands_line[i][j] == '\'') || (commands_line[i][j] == '\"'))
-				commands_line[i] = quotation(commands_line[i], &j, g_info.envp);
-			else if (commands_line[i][j] == '\\')
+			j = 0;
+			if (!ft_strncmp(line_split[i], "|", 1))
 			{
-				slash(commands_line[i], &j);
-				continue ;
-			}
-			else if (commands_line[i][j] == '$')
-			{
-				save = j;
-				commands_line[i] = env_var(commands_line[i], &j, g_info.envp);
-				while (save <= j)
-				{
-					if (split_cmd(commands_line[i], &save, &start, &(cmds[size - 1])) == 1)
-						continue ;
-					save++;
-				}
-			}
-			else if (ft_isredirect(commands_line[i][j], commands_line[i][j + 1]))
-			{
-				if (redirect(&(cmds[size - 1]), &j, commands_line[i]) == 1)
-				{
-					perror("Error: ");
-					break ;
-				}
-				start = j + 1;
-			}
-			else if (commands_line[i][j] == '|')
-			{
-				if (split_cmd(commands_line[i], &j, &start, &(cmds[size - 1])) == 1)
-					continue ;
-				j++;
 				size++;
+				i++;
 				continue ;
 			}
-			if (split_cmd(commands_line[i], &j, &start, &(cmds[size - 1])) == 1)
-				continue ;
-			j++;
+			if (ft_isredirect(line_split[i][j], line_split[i][j + 1]))
+			{
+				if (redirect(&(cmds[size - 1]), line_split[i], line_split[i + 1]) == 1)
+	 			{
+	 				perror("minishell");
+	 				return (NULL);
+	 			}
+				i += 2;
+	 			continue ;
+			}
+			flag = 0;
+			while (line_split && line_split[i][j])
+			{
+				if ((line_split[i][j] == '\'') || (line_split[i][j] == '\"'))
+					line_split[i] = quotation(line_split[i], &j, g_info.envp, &flag);
+				else if (line_split[i][j] == '$')
+		 		{
+		 			start = 0;
+		 			line_split[i] = env_var(line_split[i], &j, g_info.envp);
+					save_j = 0;
+					if (line_split[i][0] == '\0')
+					{
+						free(line_split[i]);
+						line_split[i] = NULL;
+						break ;
+					}
+					if (j && line_split[i][j - 1] == '$' && line_split[i][j])
+					{
+						line_shift(line_split[i], j - 1, 1);
+						j--;
+						continue ;
+					}
+		 			while (save_j <= j)						
+		 			{
+						if (ft_isspace_s(line_split[i][save_j]))
+						{	
+							if (start != save_j)
+							{
+								len = ft_size_arr(cmds[size - 1].cmd_arg);
+								cmds[size - 1].cmd_arg = ft_realloc(cmds[size - 1].cmd_arg, sizeof(char *) * len, sizeof(char *) * (len + 2));
+								cmds[size - 1].cmd_arg[len] = ft_substr(line_split[i], start, save_j - start);
+								printf("ADDED %s\n", cmds[size - 1].cmd_arg[len]);
+								line_shift(line_split[i], 0, save_j + 1);
+								j -= save_j + 1;
+								start = save_j = 0;
+								continue ;
+							}
+							start++;
+						}
+						save_j++;
+		 			}
+					line_shift(line_split[i], 0, start);
+		 		}
+				if (line_split[i][j] == '*' && line_split[i][j + 1] == '\0' && !flag)
+				{
+					char **files = get_files(".");
+					len = ft_size_arr(cmds[size - 1].cmd_arg);
+					cmds[size - 1].cmd_arg = ft_realloc(cmds[size - 1].cmd_arg, sizeof(char *) * len, sizeof(char *) * (len + ft_size_arr(files) + 2));
+					for(int i = 0; files[i]; i++)
+						cmds[size - 1].cmd_arg[len + i] = files[i];
+					free(files);
+					line_shift(line_split[i], j, 1);
+				}
+				j++;
+			}
+			if (line_split[i])
+			{
+				printf("%s\n", line_split[i]);
+				len = ft_size_arr(cmds[size - 1].cmd_arg);
+				cmds[size - 1].cmd_arg = ft_realloc(cmds[size - 1].cmd_arg, sizeof(char *) * len, sizeof(char *) * (len + 2));
+				cmds[size - 1].cmd_arg[len] = ft_substr(line_split[i], 0, ft_strlen(line_split[i]));
+			}
+			i++;
 		}
-		printf("%s\n", commands_line[i]);
-		cmds_fds(commands_line[i], cmds, size);
-		executor(cmds);
-		i++;
+		cmds_fds(cmds, size);
+		if (operator == 0 || (!ft_strncmp(line_split[operator], "||", 2) && g_info.status != 0) || (!ft_strncmp(line_split[operator], "&&", 2) && g_info.status == 0))
+	 		executor(cmds);
+		operator = i;
+		if (line_split[i])
+			i++;
 	}
-	ft_free_array(commands_line);
+	ft_free_array(line_split);
 	return (cmds);
 }

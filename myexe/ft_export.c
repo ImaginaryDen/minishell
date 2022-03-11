@@ -58,7 +58,7 @@ void	ft_export(char **args)
 	while (args[i])
 	{
 		end_name = ft_strchr(args[i], '=');
-		if (end_name == args[i] || ft_isdigit(args[i][0]))
+		if (end_name == args[i] || !is_key(args[i][0]))
 			print_err_export(args[i]);
 		else if (end_name != NULL)
 		{

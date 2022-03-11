@@ -55,6 +55,7 @@ int	exev_include(t_pipe_data *data)
 	{
 		g_info.status = 0;
 		command[i](data->cmd_arg);
+		free(command);
 		return (1);
 	}
 	free(command);
