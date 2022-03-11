@@ -14,6 +14,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <dirent.h>
+#include <signal.h>
 
 typedef struct s_info
 {
@@ -41,13 +42,18 @@ t_pipe_data	*parser(char *line, t_info *info);
 char		**split_isspace(char const *s);
 int			ft_isspace_ispipe(char ch);
 void		init_cmds_fds(t_pipe_data *commands, int size);
-char		*quotation(char *line, int *i, char **env, int *flag);
+char		*quotation(char *line, int *i, int *flag);
 int			redirect(t_pipe_data *cmds, char *redirect, char *filename);
 void		line_shift(char *line, int i, int shift);
 int			ft_isredirect(char ch1, char ch2);
 char		**preparser(char **line);
 char		*delete_isspace(char *line);
-int	is_key(char ch);
+int			is_key(char ch);
+char		**error_message(char ***line_split, int i);
+char		**error_quotes(char ***line_split);
+int			ft_isspace(char ch);
+int			special_symbol(char *line);
+void		add_str(char *line, int *i, int *start, char ***line_split);
 /*EXECUTOR*/
 int			executor(t_pipe_data *comand);
 int			ft_run_cmds(t_pipe_data *cmds, int size);
@@ -65,12 +71,12 @@ int			set_env(char *env, char *new_env);
 int			unset_env(char *env);
 void		sigint_heredoc(int sign_num);
 char		*get_env(char *str);
-char		*env_var(char *line, int *i, char **env);
+char		*env_var(char *line, int *i);
 /*function for double*/
 void		ft_free_double_arr(char **strs);
 void		ft_free_array(char **array);
 int			ft_size_arr(char **arr);
-void		char_arr_sort(char ** env);
+void		char_arr_sort(char **env);
 int			ft_add_words(char const *s, char **words);
 /*include function*/
 void		ft_unset(char **args);
@@ -81,13 +87,20 @@ void		ft_cd(char **args);
 void		ft_exit(char **argv);
 void		ft_history(char **args);
 void		ft_export(char **args);
-void 		ft_add_history(char *str);
+void		ft_add_history(char *str);
 /*utisl*/
 char		**copy_envp(char **envp);
 int			return_error(char *cmd, char *msg, int status);
 char		**get_files(char *path);
 void		exit_if_null(void *ptr, const char *msg_err);
 int			ft_isspace_s(char ch);
-void	char_arr_sort(char ** env);
+void		status_child(int pid);
+void		free_cmd(t_pipe_data *data);
+void		set_redir(int *end);
+pid_t		get_fork(t_pipe_data *cmd, pid_t *pid, int i);
+
+#define CLOSE "\001\033[0m\002"
+#define BLOD  "\001\033[1m\002"
+#define BEGIN(x,y) "\001\033["#x";"#y"m\002"
 
 #endif
