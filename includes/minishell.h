@@ -38,10 +38,10 @@ t_info g_info;
 # define ERR_FD 2
 
 /*PARSER*/
-t_pipe_data	*parser(char *line, t_info *info);
+void		parser(char *line, t_info *info);
 char		**split_isspace(char const *s);
 int			ft_isspace_ispipe(char ch);
-void		init_cmds_fds(t_pipe_data *commands, int size);
+t_pipe_data	*init_cmds_fds(int size);
 char		*quotation(char *line, int *i, int *flag);
 int			redirect(t_pipe_data *cmds, char *redirect, char *filename);
 void		line_shift(char *line, int i, int shift);

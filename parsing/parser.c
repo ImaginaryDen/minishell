@@ -1,19 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mslyther <mslyther@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/11 19:19:05 by mslyther          #+#    #+#             */
+/*   Updated: 2022/03/11 20:19:16 by mslyther         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
-
-// $0 - обрабатывать?
-// $? - нужно обработать с возвращаемым значением от предыдущей команды (напрячь Дениса)
-// 2> 1>
-// добавить обработку ${}
-
-// Проблемы:
-// echo $?	
-// echo ~
-// ~ брать не из env!
-// export a1=a2 && export a2=' a3' && export a1=hello$a2=poka
 
 void	line_shift(char *line, int i, int shift)
 {
-	int len;
+	int	len;
 
 	len = ft_strlen(line);
 	while (i + shift - 1 < len)
@@ -61,14 +62,15 @@ void	cmds_fds(t_pipe_data *cmds, int size)
 	}
 }
 
-int ft_define_size(char **line)
+int	ft_define_size(char **line)
 {
 	int	i;
-	int count;
+	int	count;
 
 	i = 0;
 	count = 1;
-	while (line[i] && ft_strncmp(line[i], "||", 2) && ft_strncmp(line[i], "&&", 2))
+	while (line[i] && ft_strncmp(line[i], "||", 2)
+		&& ft_strncmp(line[i], "&&", 2))
 	{
 		if (!ft_strncmp(line[i], "|", 1))
 			count++;
@@ -84,22 +86,33 @@ int	ft_isspace_ispipe(char ch)
 	return (0);
 }
 
-t_pipe_data *parser(char *line, t_info *info)
+void	free_if_error(char **line_split, t_pipe_data *comand)
 {
-	int		i;
-	int		j;
-	char	*new_line;
-	int		size;
-	t_pipe_data *cmds;
-	char	**line_split;
-	int		start;
-	int		end;
-	char	*substr;
-	int len;
-	int save;
-	int save_j;
-	int		operator = 0;
-	int		flag;
+	int	i;
+
+	perror("minishell");
+	ft_free_array(line_split);
+	i = 0;
+	while (comand[i].cmd_arg != NULL)
+	{
+		ft_free_double_arr(comand[i].cmd_arg);
+		i++;
+	}
+	free(comand);
+}
+
+void	parser(char *line, t_info *info)
+{
+	int			i;
+	int			j;
+	int			size;
+	t_pipe_data	*cmds;
+	char		**line_split;
+	int			start;
+	int			len;
+	int			save_j;
+	int			operator = 0;
+	int			flag;
 
 	cmds = NULL;
 	line_split = preparser(&line);
@@ -109,18 +122,10 @@ t_pipe_data *parser(char *line, t_info *info)
 	i = 0;
 	while (line_split[i])
 	{
-		printf("%d - %s\n", i, line_split[i]);
-		i++;
-	}
-	i = 0;
-	while (line_split[i])
-	{
-		size = ft_define_size(line_split + i);
-	 	cmds = malloc(sizeof(t_pipe_data) * (size + 1));
-	 	cmds[size].cmd_arg = NULL;
-	 	init_cmds_fds(cmds, size);
-	 	size = 1;
-		while (line_split[i] && ft_strncmp(line_split[i], "||", 2) && ft_strncmp(line_split[i], "&&", 2))
+		cmds = init_cmds_fds(ft_define_size(line_split + i));
+		size = 1;
+		while (line_split[i] && ft_strncmp(line_split[i], "||", 2)
+			&& ft_strncmp(line_split[i], "&&", 2))
 		{
 			j = 0;
 			if (!ft_strncmp(line_split[i], "|", 1))
@@ -131,13 +136,14 @@ t_pipe_data *parser(char *line, t_info *info)
 			}
 			if (ft_isredirect(line_split[i][j], line_split[i][j + 1]))
 			{
-				if (redirect(&(cmds[size - 1]), line_split[i], line_split[i + 1]) == 1)
-	 			{
-	 				perror("minishell");
-	 				return (NULL);
-	 			}
+				if (redirect(&(cmds[size - 1]),
+						line_split[i], line_split[i + 1]))
+				{
+					free_if_error(line_shift, cmds);
+					return ;
+				}
 				i += 2;
-	 			continue ;
+				continue ;
 			}
 			flag = 0;
 			while (line_split && line_split[i][j])
@@ -145,9 +151,9 @@ t_pipe_data *parser(char *line, t_info *info)
 				if ((line_split[i][j] == '\'') || (line_split[i][j] == '\"'))
 					line_split[i] = quotation(line_split[i], &j, &flag);
 				else if (line_split[i][j] == '$')
-		 		{
-		 			start = 0;
-		 			line_split[i] = env_var(line_split[i], &j);
+				{
+					start = 0;
+					line_split[i] = env_var(line_split[i], &j);
 					save_j = 0;
 					if (line_split[i][0] == '\0')
 					{
@@ -161,8 +167,8 @@ t_pipe_data *parser(char *line, t_info *info)
 						j--;
 						continue ;
 					}
-		 			while (save_j <= j)						
-		 			{
+					while (save_j <= j)
+					{
 						if (ft_isspace_s(line_split[i][save_j]))
 						{	
 							if (start != save_j)
@@ -179,9 +185,9 @@ t_pipe_data *parser(char *line, t_info *info)
 							start++;
 						}
 						save_j++;
-		 			}
+					}
 					line_shift(line_split[i], 0, start);
-		 		}
+				}
 				if (line_split[i][j] == '*' && line_split[i][j + 1] == '\0' && !flag)
 				{
 					char **files = get_files(".");
@@ -205,11 +211,10 @@ t_pipe_data *parser(char *line, t_info *info)
 		}
 		cmds_fds(cmds, size);
 		if (operator == 0 || (!ft_strncmp(line_split[operator], "||", 2) && g_info.status != 0) || (!ft_strncmp(line_split[operator], "&&", 2) && g_info.status == 0))
-	 		executor(cmds);
+			executor(cmds);
 		operator = i;
 		if (line_split[i])
 			i++;
 	}
 	ft_free_array(line_split);
-	return (cmds);
 }

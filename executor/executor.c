@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mslyther <mslyther@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 15:48:06 by tjamis            #+#    #+#             */
-/*   Updated: 2022/03/11 15:49:26 by tjamis           ###   ########.fr       */
+/*   Updated: 2022/03/11 19:33:24 by mslyther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,13 @@ int	executor(t_pipe_data *comand)
 	return (0);
 }
 
-void	init_cmds_fds(t_pipe_data *commands, int size)
+t_pipe_data	*init_cmds_fds(int size)
 {
-	int	i;
+	int			i;
+	t_pipe_data	*commands;
 
+	commands = malloc(sizeof(t_pipe_data) * (size + 1));
+	commands[size].cmd_arg = NULL;
 	i = 0;
 	while (i < size)
 	{
@@ -54,4 +57,5 @@ void	init_cmds_fds(t_pipe_data *commands, int size)
 		commands[i].cmd_arg = NULL;
 		i++;
 	}
+	return (commands);
 }
