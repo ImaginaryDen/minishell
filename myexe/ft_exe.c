@@ -1,12 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_exe.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/11 16:10:28 by tjamis            #+#    #+#             */
+/*   Updated: 2022/03/11 16:11:19 by tjamis           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	get_command(char *str)
 {
-	const char *comands[] = {"echo", "env", "pwd", "cd", "exit", "export", "unset", "history", NULL};
-	int i;
+	const char	*comands[] = {"echo", "env", "pwd", "cd", "exit", "export",
+		"unset", "history", NULL};
+	int			i;
 
 	i = 0;
-	while(comands[i])
+	while (comands[i])
 	{
 		if (!ft_strncmp(str, comands[i], ft_strlen(comands[i]) + 1))
 			return (i);
@@ -15,7 +28,7 @@ int	get_command(char *str)
 	return (-1);
 }
 
-void	*init_commnds()
+void	*init_commnds(void)
 {
 	void	(**command)(char **);
 
@@ -33,8 +46,8 @@ void	*init_commnds()
 
 int	exev_include(t_pipe_data *data)
 {
-	void (**command)(char **);
-	int	i;
+	void	(**command)(char **);
+	int		i;
 
 	command = init_commnds();
 	i = get_command(data->cmd_arg[0]);

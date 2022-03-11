@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   signal.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/11 17:25:37 by tjamis            #+#    #+#             */
+/*   Updated: 2022/03/11 17:25:40 by tjamis           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static void	process(int sign_num)
@@ -22,7 +34,7 @@ static void	process(int sign_num)
 	}
 }
 
-void		sigint_handler(int sign_num)
+void	sigint_handler(int sign_num)
 {	
 	if ((sign_num == SIGINT || sign_num == SIGQUIT) && g_info.pid != 0)
 		process(sign_num);
@@ -41,7 +53,7 @@ void		sigint_handler(int sign_num)
 	}
 }
 
-void		sigint_heredoc(int sign_num)
+void	sigint_heredoc(int sign_num)
 {	
 	if (sign_num == SIGINT)
 	{

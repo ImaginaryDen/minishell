@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/11 17:25:51 by tjamis            #+#    #+#             */
+/*   Updated: 2022/03/11 17:32:45 by tjamis           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-void	char_arr_sort(char ** env)
+void	char_arr_sort(char **env)
 {
 	char	*tmp;
 	int		i;
@@ -13,7 +25,7 @@ void	char_arr_sort(char ** env)
 		j = i + 1;
 		while (env[j])
 		{
-			if(ft_strncmp(env[i], env[j], ft_strlen(env[i])) > 0)
+			if (ft_strncmp(env[i], env[j], ft_strlen(env[i])) > 0)
 			{
 				tmp = env[i];
 				env[i] = env[j];
@@ -25,27 +37,25 @@ void	char_arr_sort(char ** env)
 	}
 }
 
-char **get_files(char *path)
+char	**get_files(char *path)
 {
 	char			**all_name;
 	int				size;
-	DIR*			dir;
-	struct dirent*	dir_dirent;
+	DIR				*dir;
+	struct dirent	*dir_dirent;
 
 	dir = opendir(path);
 	all_name = NULL;
 	size = 0;
-	if(dir == NULL)
-	{
-		perror("opendir");
+	if (dir == NULL)
 		return (NULL);
-	}
 	dir_dirent = readdir(dir);
-	while(dir_dirent)
+	while (dir_dirent)
 	{
-		if(dir_dirent->d_name[0] != '.')
+		if (dir_dirent->d_name[0] != '.')
 		{
-			all_name = ft_realloc(all_name, size * sizeof(char *), (size + 2) * sizeof(char *));
+			all_name = ft_realloc(all_name, size * sizeof(char *),
+					(size + 2) * sizeof(char *));
 			all_name[size] = ft_strdup(dir_dirent->d_name);
 			size++;
 		}
@@ -63,7 +73,7 @@ void	exit_if_null(void *ptr, const char *msg_err)
 	ft_exit(NULL);
 }
 
-char **copy_envp(char **envp)
+char	**copy_envp(char **envp)
 {
 	int		size;
 	char	**copy_envp;

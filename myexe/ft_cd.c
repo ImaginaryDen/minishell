@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_cd.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/11 16:02:28 by tjamis            #+#    #+#             */
+/*   Updated: 2022/03/11 16:47:57 by tjamis           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*add_home_path(char *path)
@@ -53,6 +65,21 @@ int	set_directory(char *path)
 	return (1);
 }
 
+void	set_home(char *path_arg)
+{
+	char	*path;
+
+	path = get_env("HOME");
+	if (!path)
+	{
+		return_error("cd: ", "HOME not set\n", 1);
+		return ;
+	}
+	set_directory(ft_strchr(path, '=') + 1);
+	if (path_arg && !ft_strncmp(path_arg, "~/", 2))
+		set_directory(path_arg + 2);
+}
+
 void	ft_cd(char **args)
 {
 	char	*path;
@@ -72,12 +99,7 @@ void	ft_cd(char **args)
 	}
 	else if (!args[1] || !ft_strncmp(args[1], "~", 1)
 		|| !ft_strncmp(args[1], "--", 3))
-	{
-		if (!(path = get_env("HOME")))
-			return_error("cd: ", "HOME not set\n", 1);
-		else
-			set_directory(ft_strchr(path, '=') + 1);
-	}
+		set_home(args[1]);
 	else
 		set_directory(add_home_path(args[1]));
 }

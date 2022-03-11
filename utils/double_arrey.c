@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   double_arrey.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/11 17:23:30 by tjamis            #+#    #+#             */
+/*   Updated: 2022/03/11 17:25:16 by tjamis           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	ft_free_double_arr(char **strs)
@@ -64,7 +76,12 @@ void	ft_free_array(char **array)
 	i = 0;
 	while (array[i])
 	{
+<<<<<<< Updated upstream
 		free(array[i]);
+=======
+		if (array[i])
+			free(array[i]);
+>>>>>>> Stashed changes
 		i++;
 	}
 	free(array);

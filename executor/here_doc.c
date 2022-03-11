@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   here_doc.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/11 16:01:19 by tjamis            #+#    #+#             */
+/*   Updated: 2022/03/11 16:01:26 by tjamis           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	here_doc_gnl(int *end, char *limit)
@@ -6,7 +18,6 @@ void	here_doc_gnl(int *end, char *limit)
 	const int	len = ft_strlen(limit);
 
 	close(end[READ_FD]);
-
 	signal(SIGINT, sigint_heredoc);
 	signal(SIGQUIT, sigint_heredoc);
 	ft_putchar_fd('>', 1);
@@ -28,8 +39,8 @@ void	here_doc_gnl(int *end, char *limit)
 
 int	here_doc(char *limit)
 {
-	int end[2];
-	pid_t pid;
+	int		end[2];
+	pid_t	pid;
 
 	pipe(end);
 	pid = fork();

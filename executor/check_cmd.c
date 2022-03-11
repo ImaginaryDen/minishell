@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   check_cmd.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/11 15:46:40 by tjamis            #+#    #+#             */
+/*   Updated: 2022/03/11 15:47:01 by tjamis           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*ft_full_path(char *path, char *cmd)
@@ -21,14 +33,14 @@ char	**ft_get_paths(char **envp)
 	return (ft_split(envp[i] + 5, ':'));
 }
 
-
-void check_cmd(t_pipe_data *data)
+void	check_cmd(t_pipe_data *data)
 {
 	int		i;
 	char	**paths;
 	char	*path_cmd;
 
-	if (!ft_strncmp(data->cmd_arg[0], "./", 2) || data->cmd_arg[0][0] == '/' || get_env("PATH") == NULL)
+	if (!ft_strncmp(data->cmd_arg[0], "./", 2)
+		|| data->cmd_arg[0][0] == '/' || get_env("PATH") == NULL)
 		return ;
 	paths = ft_get_paths(g_info.envp);
 	i = 0;

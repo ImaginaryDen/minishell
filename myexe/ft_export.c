@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_export.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/11 16:11:32 by tjamis            #+#    #+#             */
+/*   Updated: 2022/03/11 17:22:37 by tjamis           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-void show_export()
+void	show_export(void)
 {
 	char	**copy_env;
 	int		i;
@@ -17,17 +29,18 @@ void show_export()
 	}
 	char_arr_sort(copy_env);
 	i = 0;
-	while(i < size)
+	while (i < size)
 	{
 		tmp = ft_strchr(copy_env[i], '=') - copy_env[i];
 		if (copy_env[i][0] != '_')
-			printf("declare -x %.*s=\"%s\"\n", tmp, copy_env[i], copy_env[i] + tmp + 1);
+			printf("declare -x %.*s=\"%s\"\n",
+				tmp, copy_env[i], copy_env[i] + tmp + 1);
 		i++;
 	}
 	free(copy_env);
 }
 
-void print_err_export(char *msg)
+void	print_err_export(char *msg)
 {
 	g_info.status = 1;
 	ft_putstr_fd("minishell: export: '", 2);

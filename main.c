@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/11 17:27:55 by tjamis            #+#    #+#             */
+/*   Updated: 2022/03/11 17:27:56 by tjamis           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-void init_shell(char **envp)
+void	init_shell(char **envp)
 {
-	char *tmp;
-	int tmp_num;
+	char	*tmp;
+	int		tmp_num;
 
 	g_info.envp = copy_envp(envp);
 	g_info.status = 0;
@@ -11,17 +23,17 @@ void init_shell(char **envp)
 	signal(SIGQUIT, sigint_handler);
 	tmp = get_env("SHLVL");
 	if (!tmp)
-		return;
+		return ;
 	tmp = ft_strchr(tmp, '=') + 1;
 	if (!tmp)
-		return;
+		return ;
 	tmp_num = ft_atoi(tmp) + 1;
 	tmp = ft_itoa(tmp_num);
 	set_env("SHLVL", tmp);
 	free(tmp);
 }
 
-int main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
 	t_info	info;
 	char	*line;
@@ -37,7 +49,7 @@ int main(int argc, char **argv, char **envp)
 		if (line == NULL)
 		{
 			ft_exit(NULL);
-			break;
+			break ;
 		}
 		parser(line, &info);
 	}

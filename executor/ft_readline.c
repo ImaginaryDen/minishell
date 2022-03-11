@@ -1,12 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_readline.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/11 15:55:45 by tjamis            #+#    #+#             */
+/*   Updated: 2022/03/11 16:01:16 by tjamis           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-#define CLOSE "\001\033[0m\002"                 // Закрыть все свойства
-#define BLOD  "\001\033[1m\002"                 // Подчеркнуть, жирным шрифтом, выделить
-#define BEGIN(x,y) "\001\033["#x";"#y"m\002"    // x: background, y: foreground
-
-char *ft_add_str(char *str1, char *str2)
+char	*ft_add_str(char *str1, char *str2)
 {
-	char *str_res;
+	char	*str_res;
 
 	str_res = ft_strjoin(str1, str2);
 	free(str1);
@@ -14,18 +22,11 @@ char *ft_add_str(char *str1, char *str2)
 	return (str_res);
 }
 
-char	*prompt()
+char	*get_path(void)
 {
-	char	*str;
 	char	*tmp;
 	char	*path;
 
-	tmp = get_env("USER");
-	str = ft_strdup(BEGIN(32, 1));
-	if (tmp && ft_strchr(tmp, '='))
-		str = ft_add_str(str, ft_strdup(ft_strchr(tmp, '=') + 1));
-	str = ft_add_str(str, ft_strdup("@"CLOSE":"));
-	str = ft_add_str(str, ft_strdup(BEGIN(34, 1)));
 	path = getcwd(NULL, 0);
 	tmp = get_env("HOME");
 	if (tmp)
@@ -40,15 +41,31 @@ char	*prompt()
 		{
 			line_shift(path, 2, ft_strlen(tmp) - 1);
 			path[0] = '~';
-			 path[1] = '/';
+			path[1] = '/';
 		}
 	}
+	return (path);
+}
+
+char	*prompt(void)
+{
+	char	*str;
+	char	*tmp;
+	char	*path;
+
+	tmp = get_env("USER");
+	str = ft_strdup(BEGIN(32, 1));
+	if (tmp && ft_strchr(tmp, '='))
+		str = ft_add_str(str, ft_strdup(ft_strchr(tmp, '=') + 1));
+	str = ft_add_str(str, ft_strdup("@"CLOSE":"));
+	str = ft_add_str(str, ft_strdup(BEGIN(34, 1)));
+	path = get_path();
 	str = ft_add_str(str, path);
 	str = ft_add_str(str, ft_strdup(CLOSE"$ "));
 	return (str);
 }
 
-char	*ft_readline()
+char	*ft_readline(void)
 {
 	char	*res;
 	char	*prompt_str;
@@ -56,5 +73,5 @@ char	*ft_readline()
 	prompt_str = prompt();
 	res = readline(prompt_str);
 	free(prompt_str);
-	return res;
+	return (res);
 }
