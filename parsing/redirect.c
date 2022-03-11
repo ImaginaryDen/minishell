@@ -25,7 +25,7 @@ int	ft_isredirect(char ch1, char ch2)
 	return (0);
 }
 
-int	redirect(t_pipe_data *cmds, char *redirect, char *filename)
+int	redirect(t_cmd_data *cmds, char *redirect, char *filename)
 {
 	int	type;
 	int	fd;

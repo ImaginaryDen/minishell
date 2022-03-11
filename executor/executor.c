@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	executor(t_pipe_data *comand)
+int	executor(t_cmd_data *comand)
 {
 	int	size;
 	int	i;
@@ -39,12 +39,12 @@ int	executor(t_pipe_data *comand)
 	return (0);
 }
 
-t_pipe_data	*init_cmds_fds(int size)
+t_cmd_data	*init_cmds_fds(int size)
 {
 	int			i;
-	t_pipe_data	*commands;
+	t_cmd_data	*commands;
 
-	commands = malloc(sizeof(t_pipe_data) * (size + 1));
+	commands = malloc(sizeof(t_cmd_data) * (size + 1));
 	commands[size].cmd_arg = NULL;
 	i = 0;
 	while (i < size)

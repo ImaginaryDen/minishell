@@ -24,7 +24,7 @@ void	status_child(int pid)
 	}
 }
 
-void	free_cmd(t_pipe_data *data)
+void	free_cmd(t_cmd_data *data)
 {
 	if (data->cmd_arg)
 	{
@@ -40,7 +40,7 @@ void	set_redir(int *end)
 	dup2(end[ERR_FD], STDERR_FILENO);
 }
 
-pid_t	get_fork(t_pipe_data *cmd, pid_t *pid, int i)
+pid_t	get_fork(t_cmd_data *cmd, pid_t *pid, int i)
 {
 	pid[i] = fork();
 	g_info.pid = pid[i];

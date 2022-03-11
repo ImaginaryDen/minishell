@@ -33,7 +33,7 @@ char	**ft_get_paths(char **envp)
 	return (ft_split(envp[i] + 5, ':'));
 }
 
-void	check_cmd(t_pipe_data *data)
+void	check_cmd(t_cmd_data *data)
 {
 	int		i;
 	char	**paths;

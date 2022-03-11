@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	fork_cmd(t_pipe_data *data)
+void	fork_cmd(t_cmd_data *data)
 {
 	int	status;
 
@@ -36,7 +36,7 @@ void	fork_cmd(t_pipe_data *data)
 	status_child(status);
 }
 
-int	ft_one_cmd(t_pipe_data *data)
+int	ft_one_cmd(t_cmd_data *data)
 {
 	int	save[3];
 	int	status;
@@ -54,7 +54,7 @@ int	ft_one_cmd(t_pipe_data *data)
 	return (0);
 }
 
-int	ft_cmd(t_pipe_data *data)
+int	ft_cmd(t_cmd_data *data)
 {
 	int	i;
 
@@ -95,7 +95,7 @@ void	ft_wait_all_pid(pid_t *pid_cmd, int size)
 	}
 }
 
-int	ft_run_cmds(t_pipe_data *cmds, int size)
+int	ft_run_cmds(t_cmd_data *cmds, int size)
 {
 	int		i;
 	pid_t	*pid_cmd;

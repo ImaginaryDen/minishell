@@ -24,14 +24,24 @@ typedef struct s_info
 	int		pid;
 }t_info;
 
-typedef struct s_pipe_data
+typedef struct s_cmd_data
 {
 	int		fd_in_out[3];
 	int		fd_close[2];
 	char	**cmd_arg;
-}	t_pipe_data;
+}	t_cmd_data;
 
 t_info g_info;
+
+typedef struct s_parser_data
+{
+	t_cmd_data	*cmds;
+	char		**line_split;
+	char		**curr_cmd;
+	char		*curr_word;
+	int			size;
+}	t_parser_data;
+
 
 # define READ_FD 0
 # define WRITE_FD 1
@@ -41,9 +51,9 @@ t_info g_info;
 void		parser(char *line, t_info *info);
 char		**split_isspace(char const *s);
 int			ft_isspace_ispipe(char ch);
-t_pipe_data	*init_cmds_fds(int size);
+t_cmd_data	*init_cmds_fds(int size);
 char		*quotation(char *line, int *i, int *flag);
-int			redirect(t_pipe_data *cmds, char *redirect, char *filename);
+int			redirect(t_cmd_data *cmds, char *redirect, char *filename);
 void		line_shift(char *line, int i, int shift);
 int			ft_isredirect(char ch1, char ch2);
 char		**preparser(char **line);
@@ -55,13 +65,13 @@ int			ft_isspace(char ch);
 int			special_symbol(char *line);
 void		add_str(char *line, int *i, int *start, char ***line_split);
 /*EXECUTOR*/
-int			executor(t_pipe_data *comand);
-int			ft_run_cmds(t_pipe_data *cmds, int size);
-void		check_cmd(t_pipe_data *data);
-int			exev_include(t_pipe_data *data);
+int			executor(t_cmd_data *comand);
+int			ft_run_cmds(t_cmd_data *cmds, int size);
+void		check_cmd(t_cmd_data *data);
+int			exev_include(t_cmd_data *data);
 int			check(char **args);
-int			ft_cmd(t_pipe_data *data);
-int			ft_one_cmd(t_pipe_data *data);
+int			ft_cmd(t_cmd_data *data);
+int			ft_one_cmd(t_cmd_data *data);
 void		status_child(int pid);
 void		sigint_handler(int sign_num);
 int			here_doc(char *limit);
@@ -95,9 +105,9 @@ char		**get_files(char *path);
 void		exit_if_null(void *ptr, const char *msg_err);
 int			ft_isspace_s(char ch);
 void		status_child(int pid);
-void		free_cmd(t_pipe_data *data);
+void		free_cmd(t_cmd_data *data);
 void		set_redir(int *end);
-pid_t		get_fork(t_pipe_data *cmd, pid_t *pid, int i);
+pid_t		get_fork(t_cmd_data *cmd, pid_t *pid, int i);
 
 #define CLOSE "\001\033[0m\002"
 #define BLOD  "\001\033[1m\002"

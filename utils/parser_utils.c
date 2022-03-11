@@ -31,6 +31,8 @@ int	special_symbol(char *line)
 		return (3);
 	if (!ft_strncmp(line, "&&", 2))
 		return (4);
+	if(!*line)
+		return (0);
 	ret = ft_isredirect(*line, *(line + 1));
 	if (ret == 1 || ret == 2)
 		return (5);

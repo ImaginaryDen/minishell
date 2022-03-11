@@ -44,7 +44,7 @@ void	*init_commnds(void)
 	return (command);
 }
 
-int	exev_include(t_pipe_data *data)
+int	exev_include(t_cmd_data *data)
 {
 	void	(**command)(char **);
 	int		i;
