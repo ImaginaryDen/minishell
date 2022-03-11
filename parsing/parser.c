@@ -32,7 +32,7 @@ void	define_fds(t_pipe_data *cmds)
 		cmds[0].fd_in_out[WRITE_FD] = end[WRITE_FD];
 	else
 		close(end[WRITE_FD]);
-	if (cmds[0].fd_in_out[READ_FD] == STDIN_FILENO)
+	if (cmds[1].fd_in_out[READ_FD] == STDIN_FILENO)
 		cmds[1].fd_in_out[READ_FD] = end[READ_FD];
 	else
 		close(end[READ_FD]);
@@ -107,12 +107,12 @@ t_pipe_data *parser(char *line, t_info *info)
 	if (!line_split)
 		return (NULL);
 	i = 0;
-	//   while (line_split[i])
-	//   {
-	//   	printf("%d - %s\n", i, line_split[i]);
-	//   	i++;
-	//   }
-	//   i = 0;
+	while (line_split[i])
+	{
+		printf("%d - %s\n", i, line_split[i]);
+		i++;
+	}
+	i = 0;
 	while (line_split[i])
 	{
 		size = ft_define_size(line_split + i);
@@ -143,11 +143,11 @@ t_pipe_data *parser(char *line, t_info *info)
 			while (line_split && line_split[i][j])
 			{
 				if ((line_split[i][j] == '\'') || (line_split[i][j] == '\"'))
-					line_split[i] = quotation(line_split[i], &j, g_info.envp, &flag);
+					line_split[i] = quotation(line_split[i], &j, &flag);
 				else if (line_split[i][j] == '$')
 		 		{
 		 			start = 0;
-		 			line_split[i] = env_var(line_split[i], &j, g_info.envp);
+		 			line_split[i] = env_var(line_split[i], &j);
 					save_j = 0;
 					if (line_split[i][0] == '\0')
 					{

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirect.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mslyther <mslyther@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/11 15:31:58 by mslyther          #+#    #+#             */
+/*   Updated: 2022/03/11 19:04:36 by mslyther         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	ft_isredirect(char ch1, char ch2)
@@ -16,13 +28,12 @@ int	ft_isredirect(char ch1, char ch2)
 int	redirect(t_pipe_data *cmds, char *redirect, char *filename)
 {
 	int	type;
-	int start;
 	int	fd;
 	int	t;
 
 	t = 0;
 	if ((filename[0] == '\'') || (filename[0] == '\"'))
-		filename = quotation(filename, &t, g_info.envp, NULL);
+		filename = quotation(filename, &t, NULL);
 	type = ft_isredirect(redirect[0], redirect[1]);
 	if (type == 1)
 		fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
