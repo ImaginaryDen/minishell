@@ -111,13 +111,34 @@ void add_cmd(t_cmd_data *cmds, int size, char *str)
 				
 }
 
-int	parser_after_env(t_parser_data *data, int *j)
+void parse_env(t_parser_data *data, int *j)
 {
-	int start;
 	int save_j;
 
-	start = 0;
 	save_j = 0;
+	while (save_j <= *j)
+	{
+		while (save_j <= *j && ft_isspace(data->curr_word[save_j]))
+		{
+			line_shift(data->curr_word, 0, 1);
+			*j -= 1;
+		}
+		while (save_j <= *j && !ft_isspace(data->curr_word[save_j]))
+			save_j++;
+		if (save_j < *j)
+		{
+			add_cmd(data->cmds, data->size,
+					ft_substr(data->curr_word, 0, save_j));
+			line_shift(data->curr_word, 0, save_j + 1);
+			*j -= save_j + 1;
+			save_j = 0;
+		}
+	}
+
+}
+
+int	parser_after_env(t_parser_data *data, int *j)
+{
 	if (data->curr_word[0] == '\0')
 	{
 		free(data->curr_word);
@@ -130,25 +151,7 @@ int	parser_after_env(t_parser_data *data, int *j)
 		(*j)--;
 		return (0);
 	}
-	while (save_j <= *j)
-	{
-		if (ft_isspace(data->curr_word[save_j]))
-		{	
-			if (start != save_j)
-			{
-				add_cmd(data->cmds, data->size,
-						ft_substr(data->curr_word, start, save_j - start));
-				line_shift(data->curr_word, 0, save_j + 1);
-				*j -= save_j + 1;
-				start = 0;
-				save_j = 0;
-				continue ;
-			}
-			start++;
-		}
-		save_j++;
-	}
-	line_shift(data->curr_word, 0, start);
+	parse_env(data, j);
 }
 
 void	wildcards(t_parser_data *data, int j)
@@ -245,8 +248,6 @@ void	parser(char *line, t_info *info)
 		return ;
 	i = 0;
 	data.curr_cmd = data.line_split;
-	// for(int i = 0; data.line_split[i]; i++)
-	// 	puts(data.line_split[i]);
 	while (*data.curr_cmd)
 	{
 		data.cmds = init_cmds_fds(ft_define_size(data.curr_cmd));
