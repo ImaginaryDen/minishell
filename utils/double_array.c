@@ -1,23 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_exit.c                                          :+:      :+:    :+:   */
+/*   double_array.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tanya <tanya@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/11 16:11:26 by tjamis            #+#    #+#             */
-/*   Updated: 2022/03/13 18:31:27 by tanya            ###   ########.fr       */
+/*   Created: 2022/03/11 17:23:30 by tjamis            #+#    #+#             */
+/*   Updated: 2022/03/13 18:31:06 by tanya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_exit(char **argv)
+int	ft_size_arr(char **arr)
 {
-	if (argv == NULL)
-		ft_putstr_fd("exit\n", 1);
-	rl_clear_history();
-	ft_free_array(g_info.history);
-	ft_free_array(g_info.envp);
-	exit(g_info.status);
+	int	i;
+
+	i = 0;
+	while (arr && arr[i])
+		i++;
+	return (i);
+}
+
+void	ft_free_array(char **array)
+{
+	int	i;
+
+	i = 0;
+	if (!array)
+		return ;
+	while (array[i])
+	{
+		if (array[i])
+			free(array[i]);
+		i++;
+	}
+	free(array);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_cmd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tanya <tanya@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 15:46:40 by tjamis            #+#    #+#             */
-/*   Updated: 2022/03/11 15:47:01 by tjamis           ###   ########.fr       */
+/*   Updated: 2022/03/13 18:31:27 by tanya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	check_cmd(t_cmd_data *data)
 		path_cmd = NULL;
 		i++;
 	}
-	ft_free_double_arr(paths);
+	ft_free_array(paths);
 }
 
 int	check(char **args)

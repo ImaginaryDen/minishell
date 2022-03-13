@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_help.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mslyther <mslyther@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tanya <tanya@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 15:53:11 by tjamis            #+#    #+#             */
-/*   Updated: 2022/03/11 19:17:15 by mslyther         ###   ########.fr       */
+/*   Updated: 2022/03/13 18:31:27 by tanya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	free_cmd(t_cmd_data *data)
 {
 	if (data->cmd_arg)
 	{
-		ft_free_double_arr(data->cmd_arg);
+		ft_free_array(data->cmd_arg);
 		data->cmd_arg = NULL;
 	}
 }

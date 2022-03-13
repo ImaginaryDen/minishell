@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mslyther <mslyther@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tanya <tanya@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 18:50:48 by mslyther          #+#    #+#             */
-/*   Updated: 2022/03/11 18:51:20 by mslyther         ###   ########.fr       */
+/*   Updated: 2022/03/13 17:08:43 by tanya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	special_symbol(char *line)
 		return (3);
 	if (!ft_strncmp(line, "&&", 2))
 		return (4);
-	if(!*line)
+	if (!*line)
 		return (0);
 	ret = ft_isredirect(*line, *(line + 1));
 	if (ret == 1 || ret == 2)
@@ -50,4 +50,16 @@ void	add_str(char *line, int *i, int *start, char ***line_split)
 			sizeof(char *) * len, sizeof(char *) * (len + 2));
 	(*line_split)[len] = ft_substr(line, *start, *i - *start);
 	*start = *i;
+}
+
+void	line_shift(char *line, int i, int shift)
+{
+	int	len;
+
+	len = ft_strlen(line);
+	while (i + shift - 1 < len)
+	{
+		line[i] = line[i + shift];
+		i++;
+	}
 }

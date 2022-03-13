@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mslyther <mslyther@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tanya <tanya@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 15:48:06 by tjamis            #+#    #+#             */
-/*   Updated: 2022/03/11 19:33:24 by mslyther         ###   ########.fr       */
+/*   Updated: 2022/03/13 18:31:27 by tanya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	executor(t_cmd_data *comand)
 	i = 0;
 	while (i < size)
 	{
-		ft_free_double_arr(comand[i].cmd_arg);
+		ft_free_array(comand[i].cmd_arg);
 		i++;
 	}
 	g_info.pid = 0;

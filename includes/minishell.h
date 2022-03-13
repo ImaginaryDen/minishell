@@ -50,7 +50,6 @@ typedef struct s_parser_data
 /*PARSER*/
 void		parser(char *line, t_info *info);
 char		**split_isspace(char const *s);
-int			ft_isspace_ispipe(char ch);
 t_cmd_data	*init_cmds_fds(int size);
 char		*quotation(char *line, int *i, int *flag);
 int			redirect(t_cmd_data *cmds, char *redirect, char *filename);
@@ -61,9 +60,16 @@ char		*delete_isspace(char *line);
 int			is_key(char ch);
 char		**error_message(char ***line_split, int i);
 char		**error_quotes(char ***line_split);
+int			free_if_error(char **line_split, t_cmd_data *comand);
 int			ft_isspace(char ch);
 int			special_symbol(char *line);
 void		add_str(char *line, int *i, int *start, char ***line_split);
+void		define_fds(t_cmd_data *cmds);
+void		cmds_fds(t_cmd_data *cmds, int size);
+void		wildcards(t_parser_data *data, int j);
+void		parse_env(t_parser_data *data, int *j);
+int			parser_after_env(t_parser_data *data, int *j);
+void		add_cmd(t_cmd_data *cmds, int size, char *str);
 /*EXECUTOR*/
 int			executor(t_cmd_data *comand);
 int			ft_run_cmds(t_cmd_data *cmds, int size);
@@ -83,11 +89,9 @@ void		sigint_heredoc(int sign_num);
 char		*get_env(char *str);
 char		*env_var(char *line, int *i);
 /*function for double*/
-void		ft_free_double_arr(char **strs);
 void		ft_free_array(char **array);
 int			ft_size_arr(char **arr);
 void		char_arr_sort(char **env);
-int			ft_add_words(char const *s, char **words);
 /*include function*/
 void		ft_unset(char **args);
 void		ft_echo(char **arg);
