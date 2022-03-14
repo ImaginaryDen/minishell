@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   preparser.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mslyther <mslyther@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tanya <tanya@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 15:32:04 by mslyther          #+#    #+#             */
-/*   Updated: 2022/03/11 18:51:13 by mslyther         ###   ########.fr       */
+/*   Updated: 2022/03/15 01:05:20 by tanya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,10 @@ char	**check_syntax_errors(char ***line_split)
 	{
 		if (special_symbol((*line_split)[i]))
 		{
-			if (i - 1 > 0 && special_symbol((*line_split)[i - 1]))
+			if (i - 1 > 0 && special_symbol((*line_split)[i - 1]) > 0
+				&& special_symbol((*line_split)[i - 1]) < 5)
 				return (error_message(line_split, i));
-			if ((*line_split)[i + 1] && special_symbol((*line_split)[i + 1]) > 0
-				&& special_symbol((*line_split)[i + 1]) < 5)
+			if ((*line_split)[i + 1] && special_symbol((*line_split)[i + 1]))
 				return (error_message(line_split, i));
 		}
 		i++;

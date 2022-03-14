@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_after_enc.c                                 :+:      :+:    :+:   */
+/*   parser_after_env.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tanya <tanya@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/13 17:07:17 by tanya             #+#    #+#             */
-/*   Updated: 2022/03/13 17:07:32 by tanya            ###   ########.fr       */
+/*   Updated: 2022/03/15 00:55:12 by tanya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,7 @@ void	parse_env(t_parser_data *data, int *j)
 int	parser_after_env(t_parser_data *data, int *j)
 {
 	if (data->curr_word[0] == '\0')
-	{
-		free(data->curr_word);
-		data->curr_word = NULL;
 		return (1);
-	}
 	if (*j && data->curr_word[*j - 1] == '$' && data->curr_word[*j])
 	{
 		line_shift(data->curr_word, *j - 1, 1);
@@ -52,4 +48,5 @@ int	parser_after_env(t_parser_data *data, int *j)
 		return (0);
 	}
 	parse_env(data, j);
+	return (0);
 }

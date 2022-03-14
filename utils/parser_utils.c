@@ -6,7 +6,7 @@
 /*   By: tanya <tanya@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 18:50:48 by mslyther          #+#    #+#             */
-/*   Updated: 2022/03/13 17:08:43 by tanya            ###   ########.fr       */
+/*   Updated: 2022/03/15 00:59:33 by tanya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,4 +62,21 @@ void	line_shift(char *line, int i, int shift)
 		line[i] = line[i + shift];
 		i++;
 	}
+}
+
+int	ft_define_size(char **line)
+{
+	int	i;
+	int	count;
+
+	i = 0;
+	count = 1;
+	while (line[i] && ft_strncmp(line[i], "||", 2)
+		&& ft_strncmp(line[i], "&&", 2))
+	{
+		if (!ft_strncmp(line[i], "|", 1))
+			count++;
+		i++;
+	}
+	return (count);
 }

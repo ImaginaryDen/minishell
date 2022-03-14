@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tanya <tanya@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 15:47:05 by tjamis            #+#    #+#             */
-/*   Updated: 2022/03/11 15:47:59 by tjamis           ###   ########.fr       */
+/*   Updated: 2022/03/15 01:10:02 by tanya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,7 @@ char	*get_env(char *name)
 	len = ft_strlen(name);
 	while (g_info.envp[i])
 	{
-		if (g_info.envp[i][len] == '='
-			&& !ft_strncmp(g_info.envp[i], name, len))
+		if (!ft_strncmp(g_info.envp[i], name, len))
 			return (g_info.envp[i]);
 		i++;
 	}

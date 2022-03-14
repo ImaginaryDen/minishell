@@ -70,6 +70,7 @@ void		wildcards(t_parser_data *data, int j);
 void		parse_env(t_parser_data *data, int *j);
 int			parser_after_env(t_parser_data *data, int *j);
 void		add_cmd(t_cmd_data *cmds, int size, char *str);
+int			ft_define_size(char **line);
 /*EXECUTOR*/
 int			executor(t_cmd_data *comand);
 int			ft_run_cmds(t_cmd_data *cmds, int size);

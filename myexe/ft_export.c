@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
+/*   By: tanya <tanya@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 16:11:32 by tjamis            #+#    #+#             */
-/*   Updated: 2022/03/11 17:22:37 by tjamis           ###   ########.fr       */
+/*   Updated: 2022/03/13 19:18:48 by tanya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ void	ft_export(char **args)
 	while (args[i])
 	{
 		end_name = ft_strchr(args[i], '=');
-		if (end_name == args[i] || !is_key(args[i][0]))
+		if (end_name == args[i] || !is_key(args[i][0])
+			|| ft_isdigit(args[i][0]))
 			print_err_export(args[i]);
 		else if (end_name != NULL)
 		{

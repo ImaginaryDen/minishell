@@ -6,28 +6,11 @@
 /*   By: tanya <tanya@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 19:19:05 by mslyther          #+#    #+#             */
-/*   Updated: 2022/03/13 18:27:58 by tanya            ###   ########.fr       */
+/*   Updated: 2022/03/15 00:59:25 by tanya            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	ft_define_size(char **line)
-{
-	int	i;
-	int	count;
-
-	i = 0;
-	count = 1;
-	while (line[i] && ft_strncmp(line[i], "||", 2)
-		&& ft_strncmp(line[i], "&&", 2))
-	{
-		if (!ft_strncmp(line[i], "|", 1))
-			count++;
-		i++;
-	}
-	return (count);
-}
 
 void	add_cmd(t_cmd_data *cmds, int size, char *str)
 {
@@ -39,13 +22,11 @@ void	add_cmd(t_cmd_data *cmds, int size, char *str)
 	cmds[size - 1].cmd_arg[len] = str;
 }
 
-void	word_parser(t_parser_data *data)
+int	word_parser(t_parser_data *data, int flag)
 {
-	int	flag;
 	int	j;
 
 	j = 0;
-	flag = 0;
 	while (data->line_split && data->curr_word[j])
 	{
 		if ((data->curr_word[j] == '\'') || (data->curr_word[j] == '\"'))
@@ -53,19 +34,39 @@ void	word_parser(t_parser_data *data)
 		else if (data->curr_word[j] == '$')
 		{
 			data->curr_word = env_var(data->curr_word, &j);
+			flag = 1;
 			if (parser_after_env(data, &j))
-				break ;
+				return (1);
 		}
-		if (data->curr_word[j] == '*'
+		else if (data->curr_word[j] == '*'
 			&& data->curr_word[j + 1] == '\0' && !flag)
 			wildcards(data, j);
 		j++;
 	}
-	if (!data->curr_word)
-		return ;
-	add_cmd(data->cmds, data->size,
-		ft_substr(data->curr_word, 0, ft_strlen(data->curr_word)));
-	free(data->curr_word);
+	return (0);
+}
+
+int	check_pipe_redirect(t_parser_data *data)
+{
+	if (!ft_strncmp(*data->curr_cmd, "|", 1))
+	{
+		data->size++;
+		data->curr_cmd++;
+		return (1);
+	}
+	if (ft_isredirect(data->curr_cmd[0][0], data->curr_cmd[0][1]))
+	{
+		data->curr_word = ft_strdup(data->curr_cmd[1]);
+		if (ft_isredirect(data->curr_cmd[0][0], data->curr_cmd[0][1]) != 4)
+			word_parser(data, 1);
+		if (redirect(&(data->cmds[data->size - 1]),
+				data->curr_cmd[0], data->curr_word))
+			return (free_if_error(data->line_split, data->cmds) + 1);
+		data->curr_cmd += 2;
+		free(data->curr_word);
+		return (1);
+	}
+	return (0);
 }
 
 int	command_parser(t_parser_data *data)
@@ -73,22 +74,15 @@ int	command_parser(t_parser_data *data)
 	while (data->curr_cmd[0] && ft_strncmp(data->curr_cmd[0], "||", 2)
 		&& ft_strncmp(data->curr_cmd[0], "&&", 2))
 	{
-		if (!ft_strncmp(*data->curr_cmd, "|", 1))
-		{
-			data->size++;
-			data->curr_cmd++;
+		if (check_pipe_redirect(data))
 			continue ;
-		}
-		if (ft_isredirect(data->curr_cmd[0][0], data->curr_cmd[0][1]))
-		{
-			if (redirect(&(data->cmds[data->size - 1]),
-					data->curr_cmd[0], data->curr_cmd[1]))
-				return (free_if_error(data->line_split, data->cmds) + 1);
-			data->curr_cmd += 2;
-			continue ;
-		}
 		data->curr_word = ft_strdup(data->curr_cmd[0]);
-		word_parser(data);
+		if (!word_parser(data, 0))
+		{
+			add_cmd(data->cmds, data->size,
+				ft_substr(data->curr_word, 0, ft_strlen(data->curr_word)));
+			free(data->curr_word);
+		}
 		data->curr_cmd++;
 	}
 	return (0);
