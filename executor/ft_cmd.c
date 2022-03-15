@@ -6,7 +6,7 @@
 /*   By: mslyther <mslyther@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 15:49:38 by tjamis            #+#    #+#             */
-/*   Updated: 2022/03/11 19:17:29 by mslyther         ###   ########.fr       */
+/*   Updated: 2022/03/15 14:04:11 by mslyther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ void	fork_cmd(t_cmd_data *data)
 int	ft_one_cmd(t_cmd_data *data)
 {
 	int	save[3];
-	int	status;
 
 	save[READ_FD] = dup(STDIN_FILENO);
 	save[WRITE_FD] = dup(STDOUT_FILENO);
@@ -108,7 +107,7 @@ int	ft_run_cmds(t_cmd_data *cmds, int size)
 	i = 0;
 	while (i < size)
 	{
-		if (get_fork(cmds + i, pid_cmd, i))
+		if (get_fork(pid_cmd, i))
 			break ;
 		if (!pid_cmd[i])
 			ft_cmd(cmds + i);

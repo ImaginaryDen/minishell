@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_cmd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mslyther <mslyther@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 15:46:40 by tjamis            #+#    #+#             */
-/*   Updated: 2022/03/15 13:14:55 by tjamis           ###   ########.fr       */
+/*   Updated: 2022/03/15 14:02:37 by mslyther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ void	check_cmd(t_cmd_data *data)
 int	check(char **args)
 {
 	struct stat	f;
-	int			flag;
 
 	if (stat(args[0], &f) != -1)
 	{

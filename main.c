@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mslyther <mslyther@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 17:27:55 by tjamis            #+#    #+#             */
-/*   Updated: 2022/03/11 17:27:56 by tjamis           ###   ########.fr       */
+/*   Updated: 2022/03/15 14:01:42 by mslyther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,6 @@ int	main(int argc, char **argv, char **envp)
 			ft_exit(NULL);
 			break ;
 		}
-		parser(line, &info);
+		parser(line);
 	}
 }

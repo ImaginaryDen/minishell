@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mslyther <mslyther@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/15 13:28:21 by tjamis            #+#    #+#             */
-/*   Updated: 2022/03/15 13:29:26 by tjamis           ###   ########.fr       */
+/*   Updated: 2022/03/15 14:03:26 by mslyther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ typedef struct s_parser_data
 # define ERR_FD 2
 
 /*PARSER*/
-void		parser(char *line, t_info *info);
+void		parser(char *line);
 char		**split_isspace(char const *s);
 t_cmd_data	*init_cmds_fds(int size);
 char		*quotation(char *line, int *i, int *flag);
@@ -71,7 +71,7 @@ char		*delete_isspace(char *line);
 int			is_key(char ch);
 char		**error_message(char ***line_split, int i);
 char		**error_quotes(char ***line_split);
-int			free_if_error(char **line_split, t_cmd_data *comand);
+int			free_if_error(t_cmd_data *comand);
 int			ft_isspace(char ch);
 int			special_symbol(char *line);
 void		add_str(char *line, int *i, int *start, char ***line_split);
@@ -123,7 +123,7 @@ int			ft_isspace_s(char ch);
 void		status_child(int pid);
 void		free_cmd(t_cmd_data *data);
 void		set_redir(int *end);
-pid_t		get_fork(t_cmd_data *cmd, pid_t *pid, int i);
+pid_t		get_fork(pid_t *pid, int i);
 /*rl library*/
 void		rl_clear_history(void);
 void		rl_replace_line(const char *text, int clear_undo);

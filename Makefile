@@ -10,7 +10,7 @@ OBJ_DIR		=	./objects
 SRC			=	$(shell ls ./*c) $(shell ls myexe/*c) $(shell ls parsing/*c) $(shell ls executor/*c) $(shell ls utils/*c)
 OBJ			=	$(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
 
-CFLAGS		=   -I$(PATH_HEADER) -I$(PATH_IMAC)include #-Wall -Wextra -Werror
+CFLAGS		=   -I$(PATH_HEADER) -I$(PATH_IMAC)include -Wall -Wextra -Werror
 RM			=	rm -rf
 CC			=	gcc
 

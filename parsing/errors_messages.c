@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors_messages.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tanya <tanya@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mslyther <mslyther@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 18:47:55 by mslyther          #+#    #+#             */
-/*   Updated: 2022/03/13 18:31:27 by tanya            ###   ########.fr       */
+/*   Updated: 2022/03/15 13:51:31 by mslyther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char	**error_quotes(char ***line_split)
 	return (NULL);
 }
 
-int	free_if_error(char **line_split, t_cmd_data *comand)
+int	free_if_error(t_cmd_data *comand)
 {
 	int	i;
 

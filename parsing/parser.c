@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tanya <tanya@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mslyther <mslyther@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 19:19:05 by mslyther          #+#    #+#             */
-/*   Updated: 2022/03/15 00:59:25 by tanya            ###   ########.fr       */
+/*   Updated: 2022/03/15 14:01:22 by mslyther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	check_pipe_redirect(t_parser_data *data)
 			word_parser(data, 1);
 		if (redirect(&(data->cmds[data->size - 1]),
 				data->curr_cmd[0], data->curr_word))
-			return (free_if_error(data->line_split, data->cmds) + 1);
+			return (free_if_error(data->cmds + 1));
 		data->curr_cmd += 2;
 		free(data->curr_word);
 		return (1);
@@ -88,7 +88,7 @@ int	command_parser(t_parser_data *data)
 	return (0);
 }
 
-void	parser(char *line, t_info *info)
+void	parser(char *line)
 {
 	int				oper;
 	t_parser_data	data;

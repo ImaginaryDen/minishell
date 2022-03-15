@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_help.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tanya <tanya@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mslyther <mslyther@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 15:53:11 by tjamis            #+#    #+#             */
-/*   Updated: 2022/03/13 18:31:27 by tanya            ###   ########.fr       */
+/*   Updated: 2022/03/15 14:02:58 by mslyther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	set_redir(int *end)
 	dup2(end[ERR_FD], STDERR_FILENO);
 }
 
-pid_t	get_fork(t_cmd_data *cmd, pid_t *pid, int i)
+pid_t	get_fork(pid_t *pid, int i)
 {
 	pid[i] = fork();
 	g_info.pid = pid[i];
