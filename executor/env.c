@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tanya <tanya@student.42.fr>                +#+  +:+       +#+        */
+/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 15:47:05 by tjamis            #+#    #+#             */
-/*   Updated: 2022/03/15 01:10:02 by tanya            ###   ########.fr       */
+/*   Updated: 2022/03/15 13:02:51 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ char	*get_env(char *name)
 	len = ft_strlen(name);
 	while (g_info.envp[i])
 	{
-		if (!ft_strncmp(g_info.envp[i], name, len))
+		if (!ft_strncmp(name, g_info.envp[i], len)
+			&& g_info.envp[i][len] == '=')
 			return (g_info.envp[i]);
 		i++;
 	}
@@ -38,7 +39,8 @@ int	set_env(char *env, char *new_env)
 		return (0);
 	len = ft_strlen(env);
 	i = 0;
-	while (g_info.envp[i] && ft_strncmp(env, g_info.envp[i], len))
+	while (g_info.envp[i] && (ft_strncmp(env, g_info.envp[i], len)
+			|| g_info.envp[i][len] != '='))
 		i++;
 	if (g_info.envp[i])
 	{
@@ -66,7 +68,8 @@ int	unset_env(char *env)
 		return (0);
 	len = ft_strlen(env);
 	i = 0;
-	while (g_info.envp[i] && ft_strncmp(env, g_info.envp[i], len))
+	while (g_info.envp[i] && (ft_strncmp(env, g_info.envp[i], len)
+			|| g_info.envp[i][len] != '='))
 		i++;
 	if (!g_info.envp[i])
 		return (1);
