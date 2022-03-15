@@ -6,7 +6,7 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 17:25:37 by tjamis            #+#    #+#             */
-/*   Updated: 2022/03/15 15:00:54 by tjamis           ###   ########.fr       */
+/*   Updated: 2022/03/15 15:10:55 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,9 @@ void	sigint_handler(int sign_num)
 		if (sign_num == SIGINT)
 		{
 			g_info.status = 1;
+			rl_on_new_line();
+			rl_redisplay();
+			ft_putstr_fd("  ", 1);
 			ft_putstr_fd("\n", 1);
 			rl_on_new_line();
 			rl_replace_line("", 1);
