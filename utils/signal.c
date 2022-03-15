@@ -6,7 +6,7 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 17:25:37 by tjamis            #+#    #+#             */
-/*   Updated: 2022/03/15 14:48:14 by tjamis           ###   ########.fr       */
+/*   Updated: 2022/03/15 15:00:54 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,9 @@ void	sigint_handler(int sign_num)
 		}
 		else if (sign_num == SIGQUIT)
 		{
-			ft_putstr_fd("\b\b  \b\b", 1);
-			rl_replace_line("", 1);
+			rl_on_new_line();
 			rl_redisplay();
+			ft_putstr_fd("  \b\b", 1);
 		}
 	}
 }
