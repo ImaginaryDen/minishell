@@ -6,7 +6,7 @@
 /*   By: mslyther <mslyther@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 15:32:04 by mslyther          #+#    #+#             */
-/*   Updated: 2022/03/15 14:02:01 by mslyther         ###   ########.fr       */
+/*   Updated: 2022/03/15 15:27:18 by mslyther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,10 @@ int	skip_quotations(char *line, int *i)
 {
 	char	quote_type;
 
-	if (*i != 0 && line[*i - 1] == '\\')
-	{
-		(*i)++;
-		return (0);
-	}
 	quote_type = line[*i];
 	(*i)++;
 	while (line[*i] && line[*i] != quote_type)
-	{
-		if (line[*i] == '\\' && line[*i + 1] == quote_type)
-			(*i)++;
 		(*i)++;
-	}
 	if (!line[*i])
 		return (1);
 	return (0);
