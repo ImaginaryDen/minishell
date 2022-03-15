@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tanya <tanya@student.42.fr>                +#+  +:+       +#+        */
+/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 16:11:32 by tjamis            #+#    #+#             */
-/*   Updated: 2022/03/13 19:18:48 by tanya            ###   ########.fr       */
+/*   Updated: 2022/03/15 14:53:34 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void	print_err_export(char *msg)
 	ft_putstr_fd("minishell: export: '", 2);
 	ft_putstr_fd(msg, 2);
 	ft_putstr_fd("' not a valid identifier\n", 2);
+	g_info.status = 1;
 }
 
 void	ft_export(char **args)
@@ -55,6 +56,7 @@ void	ft_export(char **args)
 	char	*end_name;
 
 	i = 1;
+	g_info.status = 0;
 	while (args[i])
 	{
 		end_name = ft_strchr(args[i], '=');

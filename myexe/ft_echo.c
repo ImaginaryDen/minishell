@@ -6,7 +6,7 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 16:02:36 by tjamis            #+#    #+#             */
-/*   Updated: 2022/03/11 16:02:55 by tjamis           ###   ########.fr       */
+/*   Updated: 2022/03/15 14:51:48 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,5 @@ void	ft_echo(char **arg)
 	}
 	if (!is_n)
 		ft_putstr_fd("\n", STDOUT_FILENO);
+	g_info.status = 0;
 }

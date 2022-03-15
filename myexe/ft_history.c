@@ -6,7 +6,7 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 17:22:40 by tjamis            #+#    #+#             */
-/*   Updated: 2022/03/11 17:22:57 by tjamis           ###   ########.fr       */
+/*   Updated: 2022/03/15 14:53:43 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,5 @@ void	ft_add_history(char *str)
 			sizeof(char *) * i, sizeof(char *) * (i + 2));
 	g_info.history[i] = ft_strdup(str);
 	add_history(str);
+	g_info.status = 0;
 }

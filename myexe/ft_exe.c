@@ -6,7 +6,7 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 16:10:28 by tjamis            #+#    #+#             */
-/*   Updated: 2022/03/11 16:11:19 by tjamis           ###   ########.fr       */
+/*   Updated: 2022/03/15 14:51:43 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ int	exev_include(t_cmd_data *data)
 	i = get_command(data->cmd_arg[0]);
 	if (i >= 0)
 	{
-		g_info.status = 0;
 		command[i](data->cmd_arg);
 		free(command);
 		return (1);

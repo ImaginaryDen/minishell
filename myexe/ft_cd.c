@@ -6,7 +6,7 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 16:02:28 by tjamis            #+#    #+#             */
-/*   Updated: 2022/03/11 16:47:57 by tjamis           ###   ########.fr       */
+/*   Updated: 2022/03/15 14:52:28 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ int	set_directory(char *path)
 	else
 		ft_putstr_fd(": Not a directory", 2);
 	ft_putchar_fd('\n', 2);
+	g_info.status = 0;
 	return (1);
 }
 
@@ -78,6 +79,7 @@ void	set_home(char *path_arg)
 	set_directory(ft_strchr(path, '=') + 1);
 	if (path_arg && !ft_strncmp(path_arg, "~/", 2))
 		set_directory(path_arg + 2);
+	g_info.status = 0;
 }
 
 void	ft_cd(char **args)
