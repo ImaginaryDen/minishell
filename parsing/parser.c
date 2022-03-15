@@ -6,7 +6,7 @@
 /*   By: mslyther <mslyther@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 19:19:05 by mslyther          #+#    #+#             */
-/*   Updated: 2022/03/15 14:01:22 by mslyther         ###   ########.fr       */
+/*   Updated: 2022/03/15 15:46:48 by mslyther         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,10 @@ int	check_pipe_redirect(t_parser_data *data)
 			word_parser(data, 1);
 		if (redirect(&(data->cmds[data->size - 1]),
 				data->curr_cmd[0], data->curr_word))
-			return (free_if_error(data->cmds + 1));
+		{
+			free(data->curr_word);
+			return (free_if_error(data->cmds) + 2);
+		}
 		data->curr_cmd += 2;
 		free(data->curr_word);
 		return (1);
@@ -71,11 +74,16 @@ int	check_pipe_redirect(t_parser_data *data)
 
 int	command_parser(t_parser_data *data)
 {
+	int	status;
+
 	while (data->curr_cmd[0] && ft_strncmp(data->curr_cmd[0], "||", 2)
 		&& ft_strncmp(data->curr_cmd[0], "&&", 2))
 	{
-		if (check_pipe_redirect(data))
+		status = check_pipe_redirect(data);
+		if (status == 1)
 			continue ;
+		else if (status == 2)
+			return (1);
 		data->curr_word = ft_strdup(data->curr_cmd[0]);
 		if (!word_parser(data, 0))
 		{
