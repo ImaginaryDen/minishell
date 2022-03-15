@@ -113,6 +113,9 @@ void		status_child(int pid);
 void		free_cmd(t_cmd_data *data);
 void		set_redir(int *end);
 pid_t		get_fork(t_cmd_data *cmd, pid_t *pid, int i);
+/*rl library*/
+void		rl_clear_history (void);
+void		rl_replace_line (const char *text, int clear_undo);
 
 #define CLOSE "\001\033[0m\002"
 #define BLOD  "\001\033[1m\002"
