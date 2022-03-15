@@ -6,7 +6,7 @@
 /*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 15:47:05 by tjamis            #+#    #+#             */
-/*   Updated: 2022/03/15 13:02:51 by tjamis           ###   ########.fr       */
+/*   Updated: 2022/03/15 13:21:50 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,7 @@ int	set_env(char *env, char *new_env)
 		g_info.envp[i] = ft_realloc(g_info.envp[i],
 				ft_strlen(g_info.envp[i]), len);
 		ft_strchr(g_info.envp[i], '=')[1] = 0;
-		ft_strlcat(g_info.envp[i], new_env, len);
-		return (0);
+		return (ft_strlcat(g_info.envp[i], new_env, len));
 	}
 	g_info.envp = ft_realloc(g_info.envp,
 			sizeof(char *) * i, sizeof(char *) * (i + 2));

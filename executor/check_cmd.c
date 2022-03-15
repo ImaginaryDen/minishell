@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_cmd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tanya <tanya@student.42.fr>                +#+  +:+       +#+        */
+/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 15:46:40 by tjamis            #+#    #+#             */
-/*   Updated: 2022/03/13 18:31:27 by tanya            ###   ########.fr       */
+/*   Updated: 2022/03/15 13:14:55 by tjamis           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ char	**ft_get_paths(char **envp)
 	int	i;
 
 	i = 0;
-	while (ft_strncmp(envp[i], "PATH", 4))
+	while (ft_strncmp(envp[i], "PATH=", 5))
 		i++;
 	return (ft_split(envp[i] + 5, ':'));
 }

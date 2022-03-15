@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tjamis <tjamis@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/15 13:28:21 by tjamis            #+#    #+#             */
+/*   Updated: 2022/03/15 13:29:26 by tjamis           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -9,12 +21,12 @@
 # include <sys/wait.h>
 # include <errno.h>
 # include <fcntl.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <dirent.h>
-#include <signal.h>
+# include <sys/stat.h>
+# include <unistd.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <dirent.h>
+# include <signal.h>
 
 typedef struct s_info
 {
@@ -31,7 +43,7 @@ typedef struct s_cmd_data
 	char	**cmd_arg;
 }	t_cmd_data;
 
-t_info g_info;
+t_info	g_info;
 
 typedef struct s_parser_data
 {
@@ -41,7 +53,6 @@ typedef struct s_parser_data
 	char		*curr_word;
 	int			size;
 }	t_parser_data;
-
 
 # define READ_FD 0
 # define WRITE_FD 1
@@ -82,7 +93,7 @@ int			ft_one_cmd(t_cmd_data *data);
 void		status_child(int pid);
 void		sigint_handler(int sign_num);
 int			here_doc(char *limit);
-char		*ft_readline();
+char		*ft_readline(void);
 /*env function*/
 int			set_env(char *env, char *new_env);
 int			unset_env(char *env);
@@ -114,11 +125,10 @@ void		free_cmd(t_cmd_data *data);
 void		set_redir(int *end);
 pid_t		get_fork(t_cmd_data *cmd, pid_t *pid, int i);
 /*rl library*/
-void		rl_clear_history (void);
-void		rl_replace_line (const char *text, int clear_undo);
+void		rl_clear_history(void);
+void		rl_replace_line(const char *text, int clear_undo);
 
-#define CLOSE "\001\033[0m\002"
-#define BLOD  "\001\033[1m\002"
-#define BEGIN(x,y) "\001\033["#x";"#y"m\002"
+# define CLOSE "\001\033[0m\002"
+# define BLOD  "\001\033[1m\002"
 
 #endif
